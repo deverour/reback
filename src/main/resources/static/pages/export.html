@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- 页面meta -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>传智健康</title>
+		<meta name="description" content="传智健康">
+		<meta name="keywords" content="传智健康">
+		<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="../plugins/elementui/index.css">
+		<link rel="stylesheet" href="../css/style.css">
+		<!-- <link rel="stylesheet" href="../css/orderset.css">
+		<link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css"> -->
+		<!-- 引入组件库 -->
+		<script src="../js/vue.js"></script>
+		<script src="../plugins/elementui/index.js"></script>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<script src="../js/axios-0.18.0.js"></script>
+	</head>
+	<body class="hold-transition">
+		<div id="app">
+
+			<div class="content-header">
+				<h1>导入导出<small>签认明细下载</small></h1>
+				<el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+					<el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+					<el-breadcrumb-item>导入导出</el-breadcrumb-item>
+					<el-breadcrumb-item>签认明细下载</el-breadcrumb-item>
+				</el-breadcrumb>
+			</div>
+			<div class="app-container">
+				<div class="box">
+					<h3><small>代垫明细</small></h3>
+					<el-card class="box-card">
+						<el-row>
+							<!--分公司-->
+							<el-col :span="2">&ensp;&ensp;&ensp;&ensp;分&ensp;公&ensp;司</el-col>
+							<el-col :span="4">
+								<div class="grid-content bg-purple">
+									<el-select v-model="billbranch" multiple placeholder="请选择" size="small">
+										<el-option v-for="item in billbranchlist" :key="item" :label="item" :value="item"></el-option>
+									</el-select>
+								</div>
+							</el-col>
+
+							<!--区域-->
+							<el-col :span="2">&ensp;&ensp;&ensp;&ensp;区&ensp;&ensp;&ensp;&ensp;域</el-col>
+							<el-col :span="4">
+								<div class="grid-content bg-purple">
+									<el-select v-model="billArea" multiple placeholder="请选择" size="small" @focus="getarea()">
+										<el-option v-for="item in billArealist" :key="item" :label="item" :value="item"></el-option>
+									</el-select>
+								</div>
+							</el-col>
+
+							<!--运营商-->
+							<el-col :span="2">&ensp;&ensp;&ensp;&ensp;运&ensp;营&ensp;商</el-col>
+							<el-col :span="4">
+								<div class="grid-content bg-purple">
+									<el-select v-model="billCustomer" multiple placeholder="请选择" size="small">
+										<el-option v-for="item in billCustomerlist" :key="item" :label="item" :value="item"></el-option>
+									</el-select>
+								</div>
+							</el-col>
+						</el-row><br />
+
+						<el-row>
+							<!--支付单号-->
+							<el-col :span="2">&ensp;&ensp;&ensp;&ensp;支付单号</el-col>
+							<el-col :span="4">
+								<el-input v-model="billPayNumber" size="small" placeholder="请输入内容"></el-input>
+							</el-col>
+
+							<!--账期-->
+							<el-col :span="2">&ensp;&ensp;&ensp;&ensp;账&ensp;&ensp;&ensp;&ensp;期</el-col>
+							<el-col :span="4">
+								<el-date-picker v-model="billpaymentdate" type="daterange" range-separator="至" start-placeholder="开始日期"
+								 end-placeholder="结束日期" value-format="yyyyMM" size="small">
+								</el-date-picker>
+							</el-col>
+						</el-row><br /><br />
+						<el-row type="flex" class="row-bg" justify="space-around">
+							<el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+							<el-col :span="6"><div class="grid-content bg-purple-light">
+							<span :style="visibility">{{querymessage}}</span>
+							</div></el-col>
+							<el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+							
+
+						</el-row><br /><br />
+						<el-row>
+							<el-col :span="6" :offset="6">
+								<div class="grid-content bg-purple">
+									<el-button @click="billquery()">查询</el-button>
+									<el-button @click="billexport()" type="primary" >导出</el-button>
+								</div>
+							</el-col>
+						</el-row>
+
+					</el-card>
+				</div>
+			</div>
+		</div>
+	</body>
+
+	<script>
+		var fengjie = ["奉节", "云阳", "巫山", "巫溪"];
+		var fuling = ["涪陵", "长寿", "垫江", "南川", "武隆", "丰都"];
+		var hechuan = ["合川", "北碚", "铜梁", "潼南"];
+		var liangjiang = ["两江", "江北", "渝北"];
+		var nanan = ["南岸", "巴南", "綦江", "江津"];
+		var qianjiang = ["黔江", "秀山", "酉阳", "彭水"];
+		var wanzhou = ["万州", "开州", "梁平", "城口", "忠县", "石柱"];
+		var yongchuan = ["永川", "大足", "璧山", "荣昌"];
+		var yuzhong = ["渝中", "沙坪坝", "九龙坡", "大渡口"];
+		var billbranchmap = new Map();
+		billbranchmap.set("奉节", fengjie);
+		billbranchmap.set("涪陵", fuling);
+		billbranchmap.set("合川", hechuan);
+		billbranchmap.set("两江", liangjiang);
+		billbranchmap.set("南岸", nanan);
+		billbranchmap.set("黔江", qianjiang);
+		billbranchmap.set("万州", wanzhou);
+		billbranchmap.set("永川", yongchuan);
+		billbranchmap.set("渝中", yuzhong);
+	</script>
+	<script>
+		new Vue({
+			el: '#app',
+			data: {
+				querymessage:"",
+				billcounts:"100",
+				billmoney:"1000.00",
+				visibility: "visibility:hidden",
+				group: '',
+				billbranchlist: [],
+				billArealist: [],
+				billCustomerlist: ["移动", "联通", "电信"],
+				
+				billbranch: [],
+				billArea: [],
+				billCustomer: [],
+				billPayNumber: '',
+				billpaymentdate: [],
+
+				fullscreenLoading: false
+				
+			},
+			created: function() { //在vue初始化时调用
+				axios.get("/user/getGroup").then((response) => {
+					this.group = response.data.data;
+				})
+				this.group = "重庆";
+				if (this.group == "重庆") {
+					this.billbranchlist = ["奉节", "涪陵", "合川", "两江", "南岸", "黔江", "万州", "永川", "渝中"];
+				} else {
+					this.billbranchlist = [this.group];
+				}
+			},
+			
+			methods: {
+
+
+				getarea() {
+					this.billArea = [];
+					this.billArealist = [];
+					console.log(this.billbranch);
+					billbranchselectlist = this.billbranch
+					for (var i = 0; i < billbranchselectlist.length; i++) {
+						var mycars = billbranchmap.get(billbranchselectlist[i]).toString().split(',');
+						for (j = 0; j < mycars.length; j++) {
+							this.billArealist.push(mycars[j]);
+						}
+					}
+				},
+				billquery() {
+					const loading = this.$loading({
+						lock: true,
+						text: 'Loading...',
+						spinner: 'el-icon-loading',
+						background: 'rgba(0, 0, 0, 0.7)'
+					});
+
+					this.querymessage="";
+					var querydata = {
+						"billBranch":this.billBranch,
+						"billArea": this.billArea,
+						"billCustomer": this.billCustomer,
+						"billPayNumber":this.billPayNumber,
+						"billStartPaymentDate": this.billpaymentdate[0],
+						"billEndPaymentDate": this.billpaymentdate[1],
+					}
+					axios.post("/bill/query", querydata).then((response) => {
+						this.querymessage=response.data.message;
+						this.visibility = "visibility:visible";
+						loading.close();
+					});
+
+				},
+				billexport(){
+					const loading = this.$loading({
+						lock: true,
+						text: 'Loading...',
+						spinner: 'el-icon-loading',
+						background: 'rgba(0, 0, 0, 0.7)'
+					});
+
+					var querydata = {
+						"billArea": this.billArea,
+						"billCustomer": this.billCustomer,
+						"billPayNumber":this.billPayNumber,
+						"billStartPaymentDate": this.billpaymentdate[0],
+						"billEndPaymentDate": this.billpaymentdate[1],
+					};
+					axios.post("/bill/export", querydata,{responseType: 'blob'}).then(function(response) {
+						var blob = new Blob([response.data])
+						var downloadElement = document.createElement('a');
+						var href = window.URL.createObjectURL(blob); //创建下载的链接
+						downloadElement.href = href;
+						downloadElement.download = '代垫签认明细.xlsx'; //下载后文件名
+						document.body.appendChild(downloadElement);
+						downloadElement.click(); //点击下载
+						document.body.removeChild(downloadElement); //下载完成移除元素
+						window.URL.revokeObjectURL(href); //释放掉blob对象
+
+						console.log(response);
+						loading.close();
+						console.log("  loading.close()");
+					})
+					.catch(function(error) {
+						console.log(error);
+					});
+
+
+				}
+
+			}
+		})
+	</script>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- 页面meta -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>传智健康</title>
+		<meta name="description" content="传智健康">
+		<meta name="keywords" content="传智健康">
+		<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="../plugins/elementui/index.css">
+		<link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="../css/style.css">
+		<link rel="stylesheet" href="../css/orderset.css">
+		<!-- 引入组件库 -->
+		<script src="../js/vue.js"></script>
+		<script src="../plugins/elementui/index.js"></script>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<script src="../js/axios-0.18.0.js"></script>
+	</head>
+	<body class="hold-transition">
+		<div id="app">
+			支付单号<el-input v-model="input" placeholder="请输入内容"></el-input>
+
+			<div class="app-container">
+				<div class="box">
+					<el-row>
+						<el-col :span="8">
+							支付单号1<el-input v-model="input" placeholder="请输入内容"></el-input>
+						</el-col>
+
+
+						<el-col :span="8">
+							<div class="grid-content bg-purple-light">
+								区域
+								<el-select v-model="value2" multiple placeholder="请选择" size="small">
+									<el-option v-for="item in options2" :key="item.value" :label="item.label" :value="item.value">
+									</el-option>
+								</el-select>
+							</div>
+						</el-col>
+
+						<el-col :span="8">
+							<div class="grid-content bg-purple">
+								运营商
+								<el-select v-model="value3" multiple placeholder="请选择" size="small">
+									<el-option v-for="item in options3" :key="item.value" :label="item.label" :value="item.value">
+									</el-option>
+								</el-select>
+
+
+							</div>
+						</el-col>
+					</el-row>
+					<el-row>
+						<el-col :span="8">
+							支付单号2<el-input v-model="input" placeholder="请输入内容"></el-input>
+						</el-col>
+					</el-row>
+					<el-row>
+						<br />
+					</el-row>
+					<el-row>
+						<el-col :span="24">
+							<div class="grid-content bg-purple-dark">
+								<div class="block">
+									<span>账期</span>
+									<el-date-picker v-model="value4" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+									</el-date-picker>
+
+
+
+								</div>
+						</el-col>
+					</el-row>
+
+
+
+
+
+
+
+
+				</div>
+
+			</div>
+		</div>
+	</body>
+	<!-- 引入组件库 -->
+	<script src="../js/vue.js"></script>
+	<script src="../plugins/elementui/index.js"></script>
+	<script type="text/javascript" src="../js/jquery.min.js"></script>
+	<script>
+		new Vue({
+
+			el: '#app',
+			data: {
+
+
+				options1: [{
+					value: '奉节',
+					label: '奉节'
+				}, {
+					value: '涪陵',
+					label: '涪陵'
+				}, {
+					value: '合川',
+					label: '合川'
+				}, {
+					value: '两江',
+					label: '两江'
+				}, {
+					value: '南岸',
+					label: '南岸'
+				}, {
+					value: '黔江',
+					label: '黔江'
+				}, {
+					value: '万州',
+					label: '万州'
+				}, {
+					value: '永川',
+					label: '永川'
+				}, {
+					value: '渝中',
+					label: '渝中'
+				}],
+
+				options2: [{
+					value: '万州',
+					label: '万州'
+				}, {
+					value: '梁平',
+					label: '梁平'
+				}, {
+					value: '开州',
+					label: '开州'
+				}, {
+					value: '城口',
+					label: '城口'
+				}, {
+					value: '忠县',
+					label: '忠县'
+				}, {
+					value: '石柱',
+					label: '石柱'
+				}],
+
+				options3: [{
+					value: '移动',
+					label: '移动'
+				}, {
+					value: '联通',
+					label: '联通'
+				}, {
+					value: '电信',
+					label: '电信'
+				}],
+
+				value1: [],
+				value2: [],
+				value3: [],
+				value4: "",
+				input: ''
+
+			},
+			created: function() { //在vue初始化时调用
+
+			},
+			methods: {
+
+			}
+		})
+	</script>
+</html>
