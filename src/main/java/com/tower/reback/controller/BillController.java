@@ -74,7 +74,7 @@ public class BillController {
     }
 
     @RequestMapping("/export")
-    public ResponseEntity<byte[]> export(@RequestBody BillQueryBean billQueryBean, HttpSession httpSession,HttpServletRequest request) throws Exception {
+    public ResponseEntity<byte[]> export(@RequestBody BillQueryBean billQueryBean, HttpSession httpSession)  {
         try {
             User user = (User)httpSession.getAttribute("user");
             List<Bill> bills = billService.findByCondition(billQueryBean,user);

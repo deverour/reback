@@ -1,8 +1,9 @@
 package com.tower.reback.poi;
 
 
-import com.tower.reback.entity.BillExcelInfo;
+import com.tower.reback.entity.TitleList;
 import com.tower.reback.pojo.Bill;
+import com.tower.reback.pojo.Reback;
 import com.tower.reback.utils.Utils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.streaming.SXSSFCell;
@@ -27,7 +28,7 @@ public class ExcelWrite {
         }
 
         SXSSFWorkbook wb=new SXSSFWorkbook();
-        ArrayList<String> namelist = BillExcelInfo.getBillTitle();
+        ArrayList<String> namelist = TitleList.getBillTitle();
         //long t0;
         //long t6;
         //long t6a=0;
@@ -234,10 +235,12 @@ public class ExcelWrite {
         }
         return in;
     }
+
+    */
     public static InputStream  WriteRebacks(List<Reback> list) throws Exception {
         ArrayList<String> sheetName = new ArrayList<String>();
         SXSSFWorkbook wb=new SXSSFWorkbook();
-        ArrayList<String> namelist = Reback.getNamelist();
+        ArrayList<String> namelist = TitleList.getRebackTitle();
         wb.createSheet("steet1");
         SXSSFSheet sheet = wb.getSheetAt(0);
         int rowindex = 0;
@@ -278,6 +281,6 @@ public class ExcelWrite {
         }
         return in;
     }
-*/
+
 
 }

@@ -1,6 +1,6 @@
 package com.tower.reback.poi;
 
-import com.tower.reback.entity.BillExcelInfo;
+import com.tower.reback.entity.ExcelColumns;
 import com.tower.reback.entity.Group;
 import com.tower.reback.entity.Result;
 import com.tower.reback.pojo.User;
@@ -28,23 +28,23 @@ public class LogicCheck {
         String oldkaipiaobianhao;
         String oldkey="";
 
-        if (bills.get(0).size()< BillExcelInfo.INDEX_KAIPIAOBIANHAO+1){
+        if (bills.get(0).size()< ExcelColumns.INDEX_BILL_KAIPIAOBIANHAO+1){
             message=message+"第【"+(bills.get(0).size()+1)+"】列不能为空\n";
             //map.put("msg",message);
             return new Result(false,message);
         }else {
-            oldkaipiaobianhao=bills.get(0).get(BillExcelInfo.INDEX_KAIPIAOBIANHAO);
+            oldkaipiaobianhao=bills.get(0).get(ExcelColumns.INDEX_BILL_KAIPIAOBIANHAO);
         }
         int col=2;
         for(List<String> bill:bills){
 
 
-            if (bill.size()<BillExcelInfo.INDEX_KAIPIAOBIANHAO+1){
+            if (bill.size()< ExcelColumns.INDEX_BILL_KAIPIAOBIANHAO+1){
                 message=message+"第【"+(bill.size()+1)+"】列不能为空\n";
             }else{
 
                 //KEY
-                String newkey=bill.get(BillExcelInfo.INDEX_ZHANZHIBIANMA)+bill.get(BillExcelInfo.INDEX_DIANBIAOBIANMA)+bill.get(BillExcelInfo.INDEX_ZHONGQI);
+                String newkey=bill.get(ExcelColumns.INDEX_BILL_ZHANZHIBIANMA)+bill.get(ExcelColumns.INDEX_BILL_DIANBIAOBIANMA)+bill.get(ExcelColumns.INDEX_BILL_ZHONGQI);
                 if (newkey.equals(oldkey)){
                     message=message+"请以电费签认表表二为数据来源制表，以免后期取数导致电量翻倍（电费签认表表一为系统分摊出账，直供电按票据数量会出两条电量一样的明细），目前三家运营商电费签认表均有新模板（类似电信）\n";
                 }else {
@@ -52,7 +52,7 @@ public class LogicCheck {
                 }
 
                 //区域
-                String quyu=bill.get(BillExcelInfo.INDEX_QUYU);
+                String quyu=bill.get(ExcelColumns.INDEX_BILL_QUYU);
                 if (!Group.AreaSet.contains(quyu)){
                     message=message+"【区域错误】,请参导入模板表二限定字段\n";
                 }else if (!quyuSet.contains(quyu)){
@@ -61,35 +61,35 @@ public class LogicCheck {
                 }
 
                 //支付单号
-                String zhifudanhao=bill.get(BillExcelInfo.INDEX_ZHIFUDANHAO);
+                String zhifudanhao=bill.get(ExcelColumns.INDEX_BILL_ZHIFUDANHAO);
                 if (!paynumberSet.contains(zhifudanhao)){
 
                     message=message+ "【支付单号】不存在\n";
                 }
 
                 //站址编码
-                if (!NumberUtils.isNumber(bill.get(BillExcelInfo.INDEX_ZHANZHIBIANMA))){
+                if (!NumberUtils.isNumber(bill.get(ExcelColumns.INDEX_BILL_ZHANZHIBIANMA))){
 
                     message=message+"【站址编码】错误,请检查是否有空格或非数字\n";
-                }else if (bill.get(BillExcelInfo.INDEX_ZHANZHIBIANMA).contains(".")){
+                }else if (bill.get(ExcelColumns.INDEX_BILL_ZHANZHIBIANMA).contains(".")){
                     message=message+"【站址编码】错误,请检查是否有空格或非数字\n";
                 }
                 boolean iszhigong=false;
 
                 //电表编码
-                String dianbiaobianma=bill.get(BillExcelInfo.INDEX_DIANBIAOBIANMA);
+                String dianbiaobianma=bill.get(ExcelColumns.INDEX_BILL_DIANBIAOBIANMA);
                 if (dianbiaobianma==null){
                     message=message+ "【电表编码】不能为空\n";
                 }
 
                 //电表倍率
-                String dianbiaobeilv=bill.get(BillExcelInfo.INDEX_DIANBIAOBEILV);
+                String dianbiaobeilv=bill.get(ExcelColumns.INDEX_BILL_DIANBIAOBEILV);
                 if (dianbiaobeilv==null){
                     message=message+ "【电表倍率】不能为空\n";
                 }
 
                 //是否为直供电
-                String shifouzhigongdian=bill.get(BillExcelInfo.INDEX_SHIFOUZHIGONGDIAN);
+                String shifouzhigongdian=bill.get(ExcelColumns.INDEX_BILL_SHIFOUZHIGONGDIAN);
                 if (shifouzhigongdian==null){
 
                     message=message+ "【是否直供电】不能为空\n";
@@ -101,7 +101,7 @@ public class LogicCheck {
                 }
 
                 //户号
-                String huhao = bill.get(BillExcelInfo.INDEX_HUHAO);
+                String huhao = bill.get(ExcelColumns.INDEX_BILL_HUHAO);
                 if (iszhigong ){
                     //System.out.println(x);
                     //System.out.println("直供电");
@@ -120,8 +120,8 @@ public class LogicCheck {
                 }
 
                 //始期、终期
-                String shiqi=bill.get(BillExcelInfo.INDEX_SHIQI);
-                String zhongqi=bill.get(BillExcelInfo.INDEX_ZHONGQI);
+                String shiqi=bill.get(ExcelColumns.INDEX_BILL_SHIQI);
+                String zhongqi=bill.get(ExcelColumns.INDEX_BILL_ZHONGQI);
                 if (!NumberUtils.isNumber(shiqi) ||!NumberUtils.isNumber(zhongqi)){
 
                     message=message+"【起止时间】错误,请检查是否为时间格式(筛选时，为可缩进状态)\n";
@@ -137,36 +137,36 @@ public class LogicCheck {
 
 
                 //起度、止度、电损、电量、垫资总额、
-                if (!NumberUtils.isNumber(bill.get(BillExcelInfo.INDEX_QIDU))){
+                if (!NumberUtils.isNumber(bill.get(ExcelColumns.INDEX_BILL_QIDU))){
                     message=message+"【起度】错误,请检查是否有空格或非数字\n";
                 }
-                if (!NumberUtils.isNumber(bill.get(BillExcelInfo.INDEX_ZHIDU))){
+                if (!NumberUtils.isNumber(bill.get(ExcelColumns.INDEX_BILL_ZHIDU))){
                     message=message+"【止度】错误,请检查是否有空格或非数字\n";
                 }
-                if (!NumberUtils.isNumber(bill.get(BillExcelInfo.INDEX_DIANSUN))){
+                if (!NumberUtils.isNumber(bill.get(ExcelColumns.INDEX_BILL_DIANSUN))){
                     message=message+"【电损】错误,请检查是否有空格或非数字\n";
                 }
-                if (!NumberUtils.isNumber(bill.get(BillExcelInfo.INDEX_DIANLIANG))){
+                if (!NumberUtils.isNumber(bill.get(ExcelColumns.INDEX_BILL_DIANLIANG))){
                     message=message+"【电量】错误,请检查是否有空格或非数字\n";
                 }
-                if (!NumberUtils.isNumber(bill.get(BillExcelInfo.INDEX_DIANZIZONGE))){
+                if (!NumberUtils.isNumber(bill.get(ExcelColumns.INDEX_BILL_DIANZIZONGE))){
                     message=message+"【垫资总额】错误,请检查是否有空格或非数字\n";
                 }
                 //共享运营商
                 //System.out.println("共享运营商:"+bill.get(BillExcelInfo.INDEX_GONGXIANGYUNYINGSHANG));
-                if (!Group.ShareCustomerSet.contains(bill.get(BillExcelInfo.INDEX_GONGXIANGYUNYINGSHANG))){
+                if (!Group.ShareCustomerSet.contains(bill.get(ExcelColumns.INDEX_BILL_GONGXIANGYUNYINGSHANG))){
                     message=message+"【共享运营商】错误,请参导入模板表二限定字段\n";
                 }
 
                 //分摊比例
-                String fentanbili=bill.get(BillExcelInfo.INDEX_FENTANBILI);
+                String fentanbili=bill.get(ExcelColumns.INDEX_BILL_FENTANBILI);
                 if (!NumberUtils.isNumber(fentanbili)){
                     message=message+"【分摊比例】错误,请检查是否大于0且小于等于100%\n";
                 }else if (Double.parseDouble(fentanbili)<=0 && Double.parseDouble(fentanbili)>1){
                     message=message+"【分摊比例】错误,请检查是否大于0且小于等于100%\n";
                 }
                 //结算金额
-                String jiesuanjine=bill.get(BillExcelInfo.INDEX_JIESUANJINE);
+                String jiesuanjine=bill.get(ExcelColumns.INDEX_BILL_JIESUANJINE);
                 if (!NumberUtils.isNumber(jiesuanjine)){
                     message=message+"【结算金额】错误,请检查是否有空格或非数字\n";
                 }else {
@@ -176,7 +176,7 @@ public class LogicCheck {
                 }
 
                 //账期
-                String zhangqi=bill.get(BillExcelInfo.INDEX_ZHANGQI);
+                String zhangqi=bill.get(ExcelColumns.INDEX_BILL_ZHANGQI);
                 if (!NumberUtils.isNumber(zhangqi)){
                     message=message+"【账期】错误,请检查是否有空格或非数字\n";
                 }else if (zhangqi.contains(".")){
@@ -193,14 +193,14 @@ public class LogicCheck {
                     message=message+"【账期月份】错误,不应等于00\n";
                 }
                 //结算运营商
-                String jiesuanyunyingshang=bill.get(BillExcelInfo.INDEX_JIESUANYUNYINGSHANG);
+                String jiesuanyunyingshang=bill.get(ExcelColumns.INDEX_BILL_JIESUANYUNYINGSHANG);
                 if (!Group.CustomerSet.contains(jiesuanyunyingshang)){
                     message=message+"【结算运营商】错误,请参导入模板表二限定字段\n";
-                }else if (!bill.get(BillExcelInfo.INDEX_GONGXIANGYUNYINGSHANG).contains(jiesuanyunyingshang)){
+                }else if (!bill.get(ExcelColumns.INDEX_BILL_GONGXIANGYUNYINGSHANG).contains(jiesuanyunyingshang)){
                     message=message+"【共享运营商】应包含【结算运营商】\n";
                 }
                 //开票时间
-                String kaipiaoshijian=bill.get(BillExcelInfo.INDEX_KAIPIAOSHIJIAN);
+                String kaipiaoshijian=bill.get(ExcelColumns.INDEX_BILL_KAIPIAOSHIJIAN);
                 if (!NumberUtils.isNumber(kaipiaoshijian)){
                     message=message+"【制表时间】错误,请检查是否有空格或非数字\n";
                 }else if (kaipiaoshijian.contains(".")){
@@ -225,7 +225,7 @@ public class LogicCheck {
                 }
 
                 //开票编号
-                String kaipiaobianhao=bill.get(BillExcelInfo.INDEX_KAIPIAOBIANHAO);
+                String kaipiaobianhao=bill.get(ExcelColumns.INDEX_BILL_KAIPIAOBIANHAO);
                 if (huikuanbianhaoSet.contains(kaipiaobianhao)){
                     message=message+"【回款编号】系统已存在,请检查本次明细是否已导入\n";
                 }

@@ -35,10 +35,5 @@ public class Bill {
     private String huikuanbianhao;
     private String shangchuanriqi;
 
-  /*  private String quyus;
-    private String kehus;
-    private String times;*/
-
-
 
 }

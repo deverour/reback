@@ -254,19 +254,19 @@
 			methods: {
 				findPage() {
 					var params={
-						currentPage:this.currentPage,
-						pageSize:this.pageSize,
-						rebackBranch:this.rebackBranch,
-						rebackArea:this.rebackArea,
-						rebackCustomer:this.rebackCustomer,
-						rebacked:this.rebacked,
-						rebackScanned:this.rebackScanned,
-						rebackNumber:this.rebackNumber,
-						rebackStartPaymentDate: this.rebackPaymentdate[0],
-						rebackEndPaymentDate: this.rebackPaymentdate[1],
+						"currentPage":this.currentPage,
+						"pageSize":this.pageSize,
+						"rebackBranch":this.rebackBranch,
+						"rebackArea":this.rebackArea,
+						"rebackCustomer":this.rebackCustomer,
+						"rebacked":this.rebacked,
+						"rebackScanned":this.rebackScanned,
+						"rebackNumber":this.rebackNumber,
+						"rebackStartPaymentDate": this.rebackPaymentdate[0],
+						"rebackEndPaymentDate": this.rebackPaymentdate[1],
 
-						rebackStartReceivableDate: this.rebackReceivableDate[0],
-						rebackEndReceivableDate: this.rebackReceivableDate[1],
+						"rebackStartReceivableDate": this.rebackReceivableDate[0],
+						"rebackEndReceivableDate": this.rebackReceivableDate[1],
 
 					};
 					axios.post("/reback/findPage",params).then((response)=>{
@@ -292,21 +292,44 @@
 					}
 				},
 				rebackquery() {
+					console.log("rebackquery");
 					this.currentPage=1;
 					this.findPage();
-/*
+
+				},
+				rebackexport(){
+					alert("rebackexport");
 					var querydata = {
-						"rebackArea": this.rebackArea,
-						"rebackCustomer": this.rebackCustomer,
+						"rebackBranch":this.rebackBranch,
+						"rebackArea":this.rebackArea,
+						"rebackCustomer":this.rebackCustomer,
+						"rebacked":this.rebacked,
+						"rebackScanned":this.rebackScanned,
 						"rebackNumber":this.rebackNumber,
-						"rebackStartPaymentDate": this.rebackPaymentDate[0],
-						"rebackEndPaymentDate": this.rebackPaymentDate[1],
-					}
-					axios.post("/rebacks/query", querydata).then((response) => {
-						this.rebackcounts = response.data.rebackcounts;
-						this.rebackmoney = respone.data.rebackmoney;
+						"rebackStartPaymentDate": this.rebackPaymentdate[0],
+						"rebackEndPaymentDate": this.rebackPaymentdate[1],
+
+						"rebackStartReceivableDate": this.rebackReceivableDate[0],
+						"rebackEndReceivableDate": this.rebackReceivableDate[1],
+					};
+					axios.post("/reback/export", querydata,{responseType: 'blob'}).then(function(response) {
+						var blob = new Blob([response.data])
+						var downloadElement = document.createElement('a');
+						var href = window.URL.createObjectURL(blob); //创建下载的链接
+						downloadElement.href = href;
+						downloadElement.download = '回款流程明细.xlsx'; //下载后文件名
+						document.body.appendChild(downloadElement);
+						downloadElement.click(); //点击下载
+						document.body.removeChild(downloadElement); //下载完成移除元素
+						window.URL.revokeObjectURL(href); //释放掉blob对象
+
+						console.log(response);
+						loading.close();
+						console.log("  loading.close()");
+					}).catch(function(error) {
+								console.log(error);
 					});
-					this.visibility = "visibility:visible";*/
+
 				}
 
 			}

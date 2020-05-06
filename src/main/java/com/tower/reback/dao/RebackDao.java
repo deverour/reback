@@ -1,6 +1,7 @@
 package com.tower.reback.dao;
 
 import com.github.pagehelper.Page;
+import com.tower.reback.entity.RebackQueryBean;
 import com.tower.reback.entity.RebackQueryPageBean;
 import com.tower.reback.pojo.Reback;
 import org.apache.ibatis.annotations.Select;
@@ -51,9 +52,9 @@ public interface RebackDao {
             "and huikuanriqi between #{rebackStartReceivableDate} and #{rebackEndReceivableDate}   " +
             "</if>" +
             "</script>")
-    Page<Reback> findByCondition(RebackQueryPageBean rebackQueryPageBean);
+    Page<Reback> findByPage(RebackQueryPageBean rebackQueryPageBean);
 
-   /* @Select("<script> select * from rebacks where 1=1" +
+    @Select("<script> select * from rebacks where 1=1" +
             "<if test='rebackNumber != null and rebackNumber !=\"\"'>" +
             "and huikuanbianhao = #{rebackNumber} </if> "+
 
@@ -86,6 +87,6 @@ public interface RebackDao {
             "and huikuanriqi between #{rebackStartReceivableDate} and #{rebackEndReceivableDate}   " +
             "</if>" +
             "</script>")
-    List<Reback> findByConditionlist(RebackQueryPageBean rebackQueryPageBean);*/
+    List<Reback> findByCondition(RebackQueryBean rebackQueryBean);
 
 }
