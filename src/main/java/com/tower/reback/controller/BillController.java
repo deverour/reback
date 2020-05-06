@@ -38,7 +38,7 @@ public class BillController {
 
     @RequestMapping("/upload")
     public Result upload(@RequestParam("excelFile") MultipartFile multipartFile, HttpSession httpSession){
-        try {
+        /*try {
             User user = (User)httpSession.getAttribute("user");
             String path =UPLOAD_TEMP;
             String uuid = UUID.randomUUID().toString().replace("-","");
@@ -52,7 +52,8 @@ public class BillController {
         }catch (Exception e){
             e.printStackTrace();
             return new Result(false,"读取表格失败,请检查导入表模板后重试");
-        }
+        }*/
+        return new Result(false,"读取表格失败,请检查导入表模板后重试");
     }
 
     @RequestMapping("/query")
