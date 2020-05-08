@@ -14,7 +14,6 @@ public class BillQueryBean {
     private List<String> billArea;
     private List<String> billCustomer;
     private String billPayNumber;
-    //List<String> billPaymentDate;
     private String billStartPaymentDate;
     private String billEndPaymentDate;
 

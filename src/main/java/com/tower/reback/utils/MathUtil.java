@@ -1,6 +1,7 @@
 package com.tower.reback.utils;
 
 import com.tower.reback.pojo.Bill;
+import com.tower.reback.pojo.Cpy;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
@@ -53,59 +54,8 @@ public class MathUtil {
         System.out.println(toNumberSystem26(27));
     }
 
-    public static Bill getBill(List<String> list){
-        Bill bill = new Bill();
-        bill.setQuyu(list.get(0));
-        bill.setZhifudanhao(list.get(1));
-        bill.setZhanzhibianma(list.get(2));
-        bill.setDianbiaobianma(list.get(3));
-        bill.setDianbiaobeilv(list.get(4));
-        bill.setShifouzhigongdian(list.get(5));
-        bill.setHuhao(list.get(6));
-        bill.setShiqi(list.get(7));
-        bill.setZhongqi(list.get(8));
-        bill.setQidu(Utils.to2Round(list.get(9)));
-        bill.setZhidu(Utils.to2Round(list.get(10)));
-        bill.setDiansun(Utils.to2Round(list.get(11)));
-        bill.setDianliang(Utils.to2Round(list.get(12)));
-        bill.setDianzizonge(Utils.to2Round(list.get(13)));
-        bill.setGongxiangyunyingshang(list.get(14));
-        bill.setFentanbili(Utils.to6Round(list.get(15)));
-        bill.setJiesuanjine(Utils.to2Round(list.get(16)));
-        bill.setZhangqi(list.get(17));
-        bill.setJiesuanyunyingshang(list.get(18));
-        bill.setKaipiaoshijian(list.get(19));
-        bill.setHuikuanbianhao(list.get(20));
 
-        return bill;
-    }
-
-
-   /* public static Cpy getCpy(List<String> list){
-        Cpy cpy = new Cpy();
-        cpy.setQuyu(list.get(0));
-        cpy.setZhanzhibianma(list.get(1));
-        cpy.setZhanzhimingchen(list.get(2));
-        cpy.setGongxiangfangshi(list.get(3));
-        cpy.setShifouzhigongdian(list.get(4));
-        cpy.setDianjia(list.get(5));
-        cpy.setJizhunnianjia(Utils.to2Round(list.get(6)));
-        cpy.setYearone(Utils.to2Round(list.get(7)));
-        cpy.setYeartwo(Utils.to2Round(list.get(8)));
-        cpy.setYearthree(Utils.to2Round(list.get(9)));
-        cpy.setShiqi(list.get(10));
-        cpy.setZhongqi(list.get(11));
-        cpy.setChuzhangjine(Utils.to2Round(list.get(12)));
-        cpy.setTiaozhangjine(Utils.to2Round(list.get(13)));
-        cpy.setJiesuanjine(Utils.to6Round(list.get(14)));
-        cpy.setZhangqi(list.get(15));
-        cpy.setJiesuanyunyingshang(list.get(16));
-        cpy.setZhibiaoshijian(list.get(17));
-        cpy.setKaipiaobianhao(list.get(18));
-
-
-        return cpy;
-    }
+    /*
     public static ArrayList<String> getTitle(String filepath) throws Exception {
         ArrayList<String> list = new ArrayList<>();
         FileInputStream inp = new FileInputStream(filepath);

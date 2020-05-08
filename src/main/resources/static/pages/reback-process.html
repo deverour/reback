@@ -18,6 +18,15 @@
 		<script src="../plugins/elementui/index.js"></script>
 		<script type="text/javascript" src="../js/jquery.min.js"></script>
 		<script src="../js/axios-0.18.0.js"></script>
+		<style>
+			.el-dropdown-link {
+				cursor: pointer;
+				color: #409EFF;
+			}
+			.el-icon-arrow-down {
+				font-size: 12px;
+			}
+		</style
 	</head>
 	<body class="hold-transition">
 		<div id="app">
@@ -147,7 +156,7 @@
 
 					</el-card>
 					<el-card class="box-card">
-						<el-table border :data="dataList" style="width: 100%" size='small'>
+						<el-table border :data="dataList" style="width: 100%" size='small' current-row-key="id">
 
 							<el-table-column prop="fengongsi" label="分公司" min-width="45"> </el-table-column>
 							<el-table-column prop="quyu" label="区域"  min-width="45"> </el-table-column>
@@ -161,11 +170,13 @@
 							<el-table-column prop="issaomiao" label="扫描件" min-width="35"> </el-table-column>
 							<el-table-column prop="ishuikuan" label="是否回款" min-width="35"> </el-table-column>
 							<el-table-column prop="huikuanriqi" label="回款时间" min-width="78"> </el-table-column>
-							<el-table-column prop="scanoperation" label="扫描件操作" width="218">
+							<el-table-column prop="scanoperation" label="编辑扫描件" width="218">
 								<template slot-scope="scope" >
-									<el-button type="primary" size="mini" @click="handleUpdate(scope.row)">上传</el-button>
-									<el-button type="success" size="mini" @click="handleDownload(scope.row)">下载</el-button>
-									<el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+									<el-button type="primary" size="mini" @click="rebackScannedUpdate(scope.row)">上传</el-button>
+									<el-button type="success" size="mini" @click="rebackScannedDownload(scope.row)">下载</el-button>
+									<el-button type="danger" size="mini" @click="rebackScannedDelete(scope.row)">删除</el-button>
+
+
 								</template>
 							</el-table-column>
 							<el-table-column prop="scanoperation" label="回款明细操作"   min-width="91">
@@ -186,6 +197,15 @@
 									:total="total">
 							</el-pagination>
 						</div>
+
+						<!--<div class="add-form">
+							<el-dialog title="编辑检查项" :visible.sync="dialogFormVisible4Edit" width="30%">
+								<el-upload action="/cpy/upload" name="excelFile" :show-file-list="false"
+										   :on-success="handleSuccess" :on-progress="handleUploading" :before-upload="beforeUpload">
+									<el-button type="primary">上传文件</el-button>
+								</el-upload>
+							</el-dialog>
+						</div>-->
 					</el-card>
 				</div>
 			</div>
@@ -214,6 +234,8 @@
 		rebackBranchmap.set("渝中", yuzhong);
 	</script>
 	<script>
+
+
 		new Vue({
 			el: '#app',
 			data: {
@@ -237,7 +259,10 @@
 				rebackReceivableDate:[],
 				fullscreenLoading: false,
 
-				dataList: []
+				dataList: [],
+
+
+				dialogFormVisible4Edit:true
 			},
 			created: function() { //在vue初始化时调用
 				/*axios.get("/user/getGroup").then((response) => {
@@ -329,6 +354,10 @@
 					}).catch(function(error) {
 								console.log(error);
 					});
+
+				},
+				rebackScannedUpdate(row){
+
 
 				}
 

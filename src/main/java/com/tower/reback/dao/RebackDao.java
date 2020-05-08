@@ -9,9 +9,13 @@ import org.springframework.stereotype.Repository;
 import org.apache.ibatis.annotations.Insert;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface RebackDao {
+
+    @Select("select huikuanbianhao from rebacks")
+    public Set<String> getHuikuanbianhaoSet();
 
     @Insert("insert into rebacks (fengongsi,quyu,zhangqi,yunyingshang,kaipiaobianhao,jiesuanjine,issaomiao,ishuikuan,huikuanriqi,shangchuanriqi,iscpy) values (#{fengongsi},#{quyu},#{zhangqi},#{yunyingshang},#{kaipiaobianhao},#{jiesuanjine},#{issaomiao},#{ishuikuan},#{huikuanriqi},#{shangchuanriqi},#{iscpy}) ")
     int saveReback(Reback reback);

@@ -30,47 +30,51 @@
         </el-breadcrumb>
     </div>
     <div class="app-container">
+        <!--代垫-->
         <div class="box">
-				<h3><small>代垫电费签认表上传</small></h3>
-                <el-card class="box-card">
-                    <div class="boxMain">
-                        <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary" @click="downloadTemplate()">模板下载</el-button>
-                        <el-upload action="/bill/upload"
-                                   :http-request="myUpload"
-                                   name="excelFile"
-                                   :show-file-list="false"
-                                   :on-success="handleSuccess"
-                                   :before-upload="beforeUpload">
-                            <el-button type="primary">上传文件</el-button>
-                        </el-upload>
-                    </div>
-                    <div>
-                        请以电费签认表表二为数据来源制表，以免后期取数导致电量翻倍（电费签认表表一为系统分摊出账，直供电按票据数量会出两条电量一样的明细），目前三家运营商电费签认表均有新模板（类似电信）
-                    </div>
-                </el-card>
-                
-           
+            <h3><small>代垫电费签认表上传</small></h3>
+            <el-card class="box-card">
+                <div class="boxMain">
+                    <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary" @click="downloadTemplate()">模板下载</el-button>
+                    <el-upload action="/bill/upload" name="excelFile" :show-file-list="false"
+                               :on-success="handleSuccess" :on-progress="handleUploading" :before-upload="beforeUpload">
+                        <el-button type="primary">上传文件</el-button>
+                    </el-upload>
+                </div>
+                <div>
+                    请以电费签认表表二为数据来源制表，以免后期取数导致电量翻倍（电费签认表表一为系统分摊出账，直供电按票据数量会出两条电量一样的明细），目前三家运营商电费签认表均有新模板（类似电信）
+                </div>
+            </el-card>
         </div>
+        <!--包干-->
 		<div class="box">
-				<h3><small>包干电费签认表上传</small></h3>
-		        <el-card class="box-card">
-		            <div class="boxMain">
-		                <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary" @click="downloadTemplate()">模板下载</el-button>
-		                <el-upload action="/cpy/upload"
-		                           name="excelFile"
-		                           :show-file-list="false"
-		                           :on-success="handleSuccess"
-		                           :before-upload="beforeUpload">
-		                    <el-button type="primary">上传文件</el-button>
-		                </el-upload>
-		            </div>
-		            <div>
-		                操作说明：请点击"模板下载"按钮获取模板文件，在模板文件中录入预约设置数据后点击"上传文件"按钮上传模板文件。
-		            </div>
-		        </el-card>
-		        
-		   
+            <h3><small>包干电费签认表上传</small></h3>
+            <el-card class="box-card">
+                <div class="boxMain">
+                    <el-button style="margin-bottom: 20px;margin-right: 20px" type="primary" @click="downloadTemplate()" href="">模板下载</el-button>
+                    <el-upload action="/cpy/upload" name="excelFile" :show-file-list="false"
+                               :on-success="handleSuccess" :on-progress="handleUploading" :before-upload="beforeUpload">
+                        <el-button type="primary">上传文件</el-button>
+                    </el-upload>
+                </div>
+
+                <div>
+                   <!-- 操作说明：请点击"模板下载"按钮获取模板文件，在模板文件中录入预约设置数据后点击"上传文件"按钮上传模板文件。-->
+                    </br>
+                </div>
+            </el-card>
 		</div>
+        <el-dialog
+                title="提示"
+                :visible.sync="centerDialogVisible"
+                width="30%"
+                center>
+            <span>{{updatamessage}}</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="centerDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </div>
 </body>
@@ -80,76 +84,51 @@
 <script type="text/javascript" src="../js/jquery.min.js"></script>
 <script>
     new Vue({
-
         el: '#app',
         data:{
-            backend_url:"http://localhost:9002",
-            today:new Date(),
-            currentDay: 1,
-            currentMonth: 1,
-            currentYear: 1970,
-            currentWeek: 1,
-            days: [],  // 封装每一天的日期对象(Date对象)和index，遍历日历使用的数据模型
-            leftobj: []//用于装载页面显示的月份已经进行预约设置的数据，从服务端获取的数据
+            myloading:'',
+            updatamessage:"",
+            centerDialogVisible: false,
+
         },
         created: function () {//在vue初始化时调用
-
         },
         methods: {
-
+            // 下载导入模板
+            downloadTemplate(){
+                window.location.href="../templatefiles/代垫签认表导入模板.xlsx";
+            },
+            // 使用后缀名，判断文件类型
             beforeUpload(file){
-                console.log(file.name);
-                // 使用后缀名，判断文件类型
+
                 var fileName = file.name;
                 var fileType = fileName.substr(fileName.lastIndexOf("."));
-                console.log("fileType:"+fileType);
-                const isXLS = file.type === 'application/vnd.ms-excel';
-                if(isXLS){
-                    return true;
-                }
                 const isXLSX = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
                 if (isXLSX) {
                     return true;
                 }
-                this.$message.error('上传文件只能是xls或者xlsx格式!');
+                this.$message.error('上传文件只能是xlsx格式!');
                 return false;
             },
-            downloadTemplate(){
-                window.location.href="../../template/ordersetting_template.xlsx";
-            },
-            handleSuccess(response, file) {
-                const loading = this.$loading({
+            //loading
+            handleUploading(){
+                this.myloading= this.$loading({
                     lock: true,
                     text: 'Loading...',
                     spinner: 'el-icon-loading',
                     background: 'rgba(0, 0, 0, 0.7)'
                 });
+            },
+            //接受服务器响应
+            handleSuccess(response) {
+                this.updatamessage="";
 
+                this.myloading.close();
+                this.centerDialogVisible = true;
 
-                console.log(response.message);
-
-
-                loading.close();
+                this.updatamessage=response.message;
 
             },
-
-            /*myUpload(content) {
-                var form = new FormData();
-                form.append("excelFile", content.file);
-                axios.post(content.action, form).then(res=>{
-                    console.log(res.data.message);
-                }).catch(error=>{
-                    if (error.response) {
-                        content.onError('文件上传失败,' + error.response.data);
-                    } else if(error.request) {
-                        content.onError('文件上传失败，服务器端无响应')
-                    } else {
-                        content.onError('文件上传失败，请求封装失败')
-                    }
-                });
-            },*/
-
-
 
         }
     })

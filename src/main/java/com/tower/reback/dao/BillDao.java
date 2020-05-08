@@ -14,14 +14,13 @@ public interface BillDao {
 
 
 
-    @Select("select huikuanbianhao from bills")
-    public Set<String> getHuikuanbianhaoSet();
+
 
     @Select("select zhifudanhao from payment")
     public Set<String> getPaynumberSet();
 
     @Insert("insert into bills (quyu,zhifudanhao,zhanzhibianma,dianbiaobianma,dianbiaobeilv,shifouzhigongdian,huhao,shiqi,zhongqi,qidu,zhidu,diansun,dianliang,dianzizonge,gongxiangyunyingshang,fentanbili,jiesuanjine,zhangqi,jiesuanyunyingshang,kaipiaoshijian,kaipiaobianhao,shangchuanriqi) values (#{quyu},#{zhifudanhao},#{zhanzhibianma},#{dianbiaobianma},#{dianbiaobeilv},#{shifouzhigongdian},#{huhao},#{shiqi},#{zhongqi},#{qidu},#{zhidu},#{diansun},#{dianliang},#{dianzizonge},#{gongxiangyunyingshang},#{fentanbili},#{jiesuanjine},#{zhangqi},#{jiesuanyunyingshang},#{kaipiaoshijian},#{kaipiaobianhao},#{shangchuanriqi}) ")
-    public int savebill(Bill bill);
+    public int saveBill(Bill bill);
 
 
     @Select("<script> select * from bills where 1=1" +

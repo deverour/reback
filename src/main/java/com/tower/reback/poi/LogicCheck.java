@@ -4,7 +4,7 @@ import com.tower.reback.entity.ExcelColumns;
 import com.tower.reback.entity.Group;
 import com.tower.reback.entity.Result;
 import com.tower.reback.pojo.User;
-import com.tower.reback.utils.Utils;
+import com.tower.reback.utils.MyUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
@@ -171,7 +171,7 @@ public class LogicCheck {
                     message=message+"【结算金额】错误,请检查是否有空格或非数字\n";
                 }else {
 
-                    total=total+NumberUtils.toDouble(Utils.to2Round(jiesuanjine));
+                    total=total+NumberUtils.toDouble(MyUtils.to2Round(jiesuanjine));
 
                 }
 
@@ -266,13 +266,13 @@ public class LogicCheck {
 
       /*  map.put("msg",message);
         map.put("total",Utils.to2Round(totalStr));*/
-        return new Result(true,Utils.to2Round(totalStr));
+        return new Result(true, MyUtils.to2Round(totalStr));
 
     }
 
-/*    public static HashMap<String,String> cpysCheck(List<List<String>> cyps, User user,Set<String> huikuanbianhaoSet){
+    public static Result cpyCheck(List<List<String>> cyps, User user,Set<String> huikuanbianhaoSet){
         HashMap<String,String> map = new HashMap<String,String>();
-        HashSet<String> quyuSet = Group.getGroupMap().get(user.getGroup());
+        HashSet<String> quyuSet = Group.getBranchmap().get(user.getGroup());
         String message="";
         double total=0.0;
 
@@ -280,26 +280,26 @@ public class LogicCheck {
 
         String oldkaipiaobianhao;
         //System.out.println("cyps.get(0).size():"+cyps.get(0).size());
-        if (cyps.get(0).size()< CpyTitle.INDEX_KAIPIAOBIANHAO+1){
+        if (cyps.get(0).size()< ExcelColumns.INDEX_CPY_KAIPIAOBIANHAO+1){
             message=message+"第【"+(cyps.get(0).size()+1)+"】列不能为空\n";
             map.put("msg",message);
-            return map;
+            return new Result(false,message);
         }else {
-            oldkaipiaobianhao=cyps.get(0).get(CpyTitle.INDEX_KAIPIAOBIANHAO);
+            oldkaipiaobianhao=cyps.get(0).get(ExcelColumns.INDEX_CPY_KAIPIAOBIANHAO);
         }
         int col=2;
         for(List<String> cyp:cyps){
 
 
-            if (cyp.size()<CpyTitle.INDEX_KAIPIAOBIANHAO+1){
+            if (cyp.size()<ExcelColumns.INDEX_CPY_KAIPIAOBIANHAO+1){
                 message=message+"第【"+(cyp.size()+1)+"】列不能为空\n";
             }else{
 
 
 
                 //区域
-                String quyu=cyp.get(CpyTitle.INDEX_QUYU);
-                if (!BillMessage.quyuSet.contains(quyu)){
+                String quyu=cyp.get(ExcelColumns.INDEX_CPY_QUYU);
+                if (!Group.AreaSet.contains(quyu)){
                     message=message+"【区域错误】,请参导入模板表二限定字段\n";
                 }else if (!quyuSet.contains(quyu)){
 
@@ -308,10 +308,10 @@ public class LogicCheck {
 
 
                 //站址编码
-                if (!NumberUtils.isNumber(cyp.get(CpyTitle.INDEX_ZHANZHIBIANMA))){
+                if (!NumberUtils.isNumber(cyp.get(ExcelColumns.INDEX_CPY_ZHANZHIBIANMA))){
 
                     message=message+"【站址编码】错误,请检查是否有空格或非数字\n";
-                }else if (cyp.get(CpyTitle.INDEX_ZHANZHIBIANMA).contains(".")){
+                }else if (cyp.get(ExcelColumns.INDEX_CPY_ZHANZHIBIANMA).contains(".")){
                     message=message+"【站址编码】错误,请检查是否有空格或非数字\n";
                 }
                 boolean iszhigong=false;
@@ -319,13 +319,13 @@ public class LogicCheck {
 
 
                 //站址名称
-                String zhanzhimingchen=cyp.get(CpyTitle.INDEX_ZHANZHIMINGCHEN);
+                String zhanzhimingchen=cyp.get(ExcelColumns.INDEX_CPY_ZHANZHIMINGCHEN);
                 if (zhanzhimingchen==null){
                     message=message+ "【站点名称】不能为空\n";
                 }
 
                 //共享方式
-                String gongxiangfangshi=cyp.get(CpyTitle.INDEX_GONGXIANGFANGSHI);
+                String gongxiangfangshi=cyp.get(ExcelColumns.INDEX_CPY_GONGXIANGFANGSHI);
                 if (gongxiangfangshi==null){
 
                     message=message+ "【共享方式】不能为空\n";
@@ -337,7 +337,7 @@ public class LogicCheck {
                 }
 
                 //是否为直供电
-                String shifouzhigongdian=cyp.get(CpyTitle.INDEX_SHIFOUZHIGONGDIAN);
+                String shifouzhigongdian=cyp.get(ExcelColumns.INDEX_CPY_SHIFOUZHIGONGDIAN);
                 if (shifouzhigongdian==null){
 
                     message=message+ "【是否直供电】不能为空\n";
@@ -351,8 +351,8 @@ public class LogicCheck {
 
 
                 //始期、终期
-                String shiqi=cyp.get(CpyTitle.INDEX_SHIQI);
-                String zhongqi=cyp.get(CpyTitle.INDEX_ZHONGQI);
+                String shiqi=cyp.get(ExcelColumns.INDEX_CPY_SHIQI);
+                String zhongqi=cyp.get(ExcelColumns.INDEX_CPY_ZHONGQI);
                 if (!NumberUtils.isNumber(shiqi) ||!NumberUtils.isNumber(zhongqi)){
 
                     message=message+"【起止时间】错误,请检查是否为时间格式(筛选时，为可缩进状态)\n";
@@ -368,41 +368,41 @@ public class LogicCheck {
 
 
                 //0、1、2、3、4、
-                if (!NumberUtils.isNumber(cyp.get(CpyTitle.INDEX_DIANJIA))){
+                if (!NumberUtils.isNumber(cyp.get(ExcelColumns.INDEX_CPY_DIANJIA))){
                     message=message+"【电价】错误,请检查是否有空格或非数字\n";
                 }
-                if (!NumberUtils.isNumber(cyp.get(CpyTitle.INDEX_JIZHUNNIANJIA))){
+                if (!NumberUtils.isNumber(cyp.get(ExcelColumns.INDEX_CPY_JIZHUNNIANJIA))){
                     message=message+"【基准包干年价】错误,请检查是否有空格或非数字\n";
                 }
-                if (!NumberUtils.isNumber(cyp.get(CpyTitle.INDEX_ONE))){
+                if (!NumberUtils.isNumber(cyp.get(ExcelColumns.INDEX_CPY_ONE))){
                     message=message+"【第一年度包干年价】错误,请检查是否有空格或非数字\n";
                 }
-                if (!NumberUtils.isNumber(cyp.get(CpyTitle.INDEX_TWO))){
+                if (!NumberUtils.isNumber(cyp.get(ExcelColumns.INDEX_CPY_TWO))){
                     message=message+"【第二年度包干年价】错误,请检查是否有空格或非数字\n";
                 }
-                if (!NumberUtils.isNumber(cyp.get(CpyTitle.INDEX_THREE))){
+                if (!NumberUtils.isNumber(cyp.get(ExcelColumns.INDEX_CPY_THREE))){
                     message=message+"【第三年度包干年价】错误,请检查是否有空格或非数字\n";
                 }
-                if (!NumberUtils.isNumber(cyp.get(CpyTitle.INDEX_CHUZHANGJINE))){
+                if (!NumberUtils.isNumber(cyp.get(ExcelColumns.INDEX_CPY_CHUZHANGJINE))){
                     message=message+"【出账金额】错误,请检查是否有空格或非数字\n";
                 }
-                if (!NumberUtils.isNumber(cyp.get(CpyTitle.INDEX_TIAOZHANGJINE))){
+                if (!NumberUtils.isNumber(cyp.get(ExcelColumns.INDEX_CPY_TIAOZHANGJINE))){
                     message=message+"【调账金额】错误,请检查是否有空格或非数字\n";
                 }
 
 
 
                 //结算金额
-                String jiesuanjine=cyp.get(CpyTitle.INDEX_JIESUANJINE);
+                String jiesuanjine=cyp.get(ExcelColumns.INDEX_CPY_JIESUANJINE);
                 if (!NumberUtils.isNumber(jiesuanjine)){
                     message=message+"【结算金额】错误,请检查是否有空格或非数字\n";
                 }else {
 
-                    total=total+NumberUtils.toDouble(Utils.to2Round(jiesuanjine));
+                    total=total+NumberUtils.toDouble(MyUtils.to2Round(jiesuanjine));
                 }
 
                 //账期
-                String zhangqi=cyp.get(CpyTitle.INDEX_ZHANGQI);
+                String zhangqi=cyp.get(ExcelColumns.INDEX_CPY_ZHANGQI);
                 if (!NumberUtils.isNumber(zhangqi)){
                     message=message+"【账期】错误,请检查是否有空格或非数字\n";
                 }else if (zhangqi.contains(".")){
@@ -419,14 +419,14 @@ public class LogicCheck {
                     message=message+"【账期月份】错误,不应等于00\n";
                 }
                 //结算运营商
-                String jiesuanyunyingshang=cyp.get(CpyTitle.INDEX_JIESUANYUNYINGSHANG);
-                if (!BillMessage.yunyingshangSet.contains(jiesuanyunyingshang)){
+                String jiesuanyunyingshang=cyp.get(ExcelColumns.INDEX_CPY_JIESUANYUNYINGSHANG);
+                if (!Group.CustomerSet.contains(jiesuanyunyingshang)){
                     message=message+"【结算运营商】错误,请参导入模板表二限定字段\n";
                 }
 
 
                 //制表时间
-                String kaipiaoshijian=cyp.get(CpyTitle.INDEX_KAIPIAOSHIJIAN);
+                String kaipiaoshijian=cyp.get(ExcelColumns.INDEX_CPY_KAIPIAOSHIJIAN);
                 if (!NumberUtils.isNumber(kaipiaoshijian)){
                     message=message+"【制表时间】错误,请检查是否有空格或非数字\n";
                 }else if (kaipiaoshijian.contains(".")){
@@ -451,7 +451,7 @@ public class LogicCheck {
                 }
 
                 //开票编号
-                String kaipiaobianhao=cyp.get(CpyTitle.INDEX_KAIPIAOBIANHAO);
+                String kaipiaobianhao=cyp.get(ExcelColumns.INDEX_CPY_KAIPIAOBIANHAO);
                 if (huikuanbianhaoSet.contains(kaipiaobianhao)){
                     message=message+"【回款编号】系统已存在,请检查本次明细是否已导入\n";
                 }
@@ -479,7 +479,7 @@ public class LogicCheck {
                 if (message.length()>0){
                     message="第【"+col+"】行：\n"+message;
                     map.put("msg",message);
-                    return map;
+                    return new Result(false,message);
                 }else {
                     col++;
                 }
@@ -490,9 +490,9 @@ public class LogicCheck {
         //System.out.println(message);
         String totalStr =String.valueOf(total);
 
-        map.put("msg",message);
-        map.put("total",Utils.to2Round(totalStr));
-        return map;
+      /*  map.put("msg",message);
+        map.put("total",Utils.to2Round(totalStr));*/
+        return new Result(true, MyUtils.to2Round(totalStr));
 
-    }*/
+    }
 }
