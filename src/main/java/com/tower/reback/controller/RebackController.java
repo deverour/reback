@@ -45,7 +45,7 @@ public class RebackController {
 
 
     @RequestMapping("/export")
-    public ResponseEntity<byte[]> export(@RequestBody RebackQueryBean rebackQueryBean, HttpSession httpSession, HttpServletRequest request){
+    public ResponseEntity<byte[]> export(@RequestBody RebackQueryBean rebackQueryBean, HttpSession httpSession/*, HttpServletRequest request*/){
         try {
             User user = (User)httpSession.getAttribute("user");
             List<Reback> rebacks = rebackService.findByCondition(rebackQueryBean,user);

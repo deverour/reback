@@ -4,7 +4,9 @@ import com.github.pagehelper.Page;
 import com.tower.reback.entity.RebackQueryBean;
 import com.tower.reback.entity.RebackQueryPageBean;
 import com.tower.reback.pojo.Reback;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 import org.apache.ibatis.annotations.Insert;
 
@@ -92,5 +94,12 @@ public interface RebackDao {
             "</if>" +
             "</script>")
     List<Reback> findByCondition(RebackQueryBean rebackQueryBean);
+
+    @Select("select * from rebacks where id = #{id}")
+    Reback findbById(@Param("id") Integer id);
+
+    @Update("update rebacks set saomiaoname =#{saomiaoname},issaomiao=#{issaomiao} where id = #{id}")
+    int update(Reback reback);
+
 
 }

@@ -127,7 +127,7 @@
 						<el-row type="flex" class="row-bg">
 
 							<!--账期-->
-							<el-col :span="9">
+							<el-col :span="10">
 								&ensp;&ensp;&ensp;&ensp;账&ensp;&ensp;&ensp;&ensp;期&ensp;
 								<el-date-picker v-model="rebackPaymentdate" type="daterange" range-separator="至" start-placeholder="开始日期"
 								 end-placeholder="结束日期" value-format="yyyyMM" size="small">
@@ -135,7 +135,7 @@
 							</el-col>
 
 							<!--回款日期-->
-							<el-col :span="9">
+							<el-col :span="10">
 								回款日期&ensp;
 								<el-date-picker v-model="rebackReceivableDate" type="daterange" range-separator="至" start-placeholder="开始日期"
 								 end-placeholder="结束日期" value-format="yyyy-MM" size="small">
@@ -144,8 +144,8 @@
 						</el-row>
 						<br />
 
-						<el-row>
-							<el-col :span="6" :offset="6">
+						<el-row >
+							<el-col :span="6" :offset="8">
 								<div class="grid-content bg-purple">
 									<el-button @click="rebackquery()">查询</el-button>
 									<el-button @click="rebackexport()">导出</el-button>
@@ -198,14 +198,19 @@
 							</el-pagination>
 						</div>
 
-						<!--<div class="add-form">
-							<el-dialog title="编辑检查项" :visible.sync="dialogFormVisible4Edit" width="30%">
-								<el-upload action="/cpy/upload" name="excelFile" :show-file-list="false"
-										   :on-success="handleSuccess" :on-progress="handleUploading" :before-upload="beforeUpload">
-									<el-button type="primary">上传文件</el-button>
-								</el-upload>
+						<div class="add-form">
+							<el-dialog title="扫描件上传" :visible.sync="dialogVisible" width="20%" >
+								<span >回款编号:</span>
+								<span >{{rowRebackNumber}}</span></br></br>
+								<div style="text-align: right;display:block;">
+									<el-upload :action="'/scanned/upload?id='+rowId" name="sannedFile" :show-file-list="false" accept="image/png,.jpg,.pdf,.rar,.zip,.7z"
+											   :on-success="handleSuccess" :on-progress="handleUploading" :before-upload="beforeUpload">
+										<el-button type="primary">上传文件</el-button>
+									</el-upload>
+								</div>
+
 							</el-dialog>
-						</div>-->
+						</div>
 					</el-card>
 				</div>
 			</div>
@@ -260,9 +265,13 @@
 				fullscreenLoading: false,
 
 				dataList: [],
+				rowRebackNumber : "江津-电信-20190116-001",
+				rowId:"",
+				myloading:'',
 
 
-				dialogFormVisible4Edit:true
+
+				dialogVisible:false
 			},
 			created: function() { //在vue初始化时调用
 				/*axios.get("/user/getGroup").then((response) => {
@@ -316,12 +325,14 @@
 						}
 					}
 				},
+				//查询
 				rebackquery() {
 					console.log("rebackquery");
 					this.currentPage=1;
 					this.findPage();
 
 				},
+				//导出
 				rebackexport(){
 					alert("rebackexport");
 					var querydata = {
@@ -356,9 +367,109 @@
 					});
 
 				},
+				//扫描件上传
 				rebackScannedUpdate(row){
+					console.log("rebackScannedUpdate");
+					this.rowId=row.id;
+					this.rowRebackNumber=row.huikuanbianhao;
+					this.dialogVisible=true;
+
+				},
+				//扫描件下载
+				rebackScannedDownload(row){
+					/*axios.post("/scanned/download?id="+row.id,{responseType: 'blob'}).then(function(response) {
+						var blob = new Blob([response.data])
+						var downloadElement = document.createElement('a');
+						var href = window.URL.createObjectURL(blob); //创建下载的链接
+						downloadElement.href = href;
+						downloadElement.download = '回款流程明细.xlsx'; //下载后文件名
+						document.body.appendChild(downloadElement);
+						downloadElement.click(); //点击下载
+						document.body.removeChild(downloadElement); //下载完成移除元素
+						window.URL.revokeObjectURL(href); //释放掉blob对象
+
+						console.log(response);
+						loading.close();
+						console.log("  loading.close()");
+					}).catch(function(error) {
+						console.log(error);
+					});*/
+					window.location.href="/scanned/download?id=111248";
+				},
+
+				//扫描件删除
+				rebackScannedDelete(row){
+					this.rowRebackNumber=row.huikuanbianhao;
+					axios.post("scanned/delete?id="+row.id).then((response)=>{
+						if (response.data.flag){
+							this.$notify({
+								title: '成功',
+								message: this.rowRebackNumber+":  "+response.message,
+								type: 'success'
+							});
+							this.findPage();
+							this.myloading.close();
+						}else {
+							this.$notify.error({
+								title: '错误',
+								message: this.rowRebackNumber+":  "+response.message,
+							});
+						}
+					});
+					this.rowRebackNumber="";
+				},
+
+				// 使用后缀名，判断文件类型
+				beforeUpload(file){
+					console.log("filename:"+file.name)
+
+					if (this.isImage(file.name)){
+						return true;
+					}
+					this.$notify.error({
+						title: '错误',
+						message: '请选择正确的文件类型(例如 *.png、 *.pdf、 *.jpg、 *.rar、 *.zip、 *.7z)'
+					});
+					return false;
 
 
+
+
+				},
+				//loading
+				handleUploading(){
+					this.dialogVisible=false;
+					this.myloading= this.$loading({
+						lock: true,
+						text: 'Loading...',
+						spinner: 'el-icon-loading',
+						background: 'rgba(0, 0, 0, 0.7)'
+					});
+				},
+				//接受服务器响应
+				handleSuccess(response) {
+					if (response.data.flag){
+						this.$notify({
+							title: '成功',
+							message: this.rowRebackNumber+":  "+response.message,
+							type: 'success'
+						});
+						this.findPage();
+						this.myloading.close();
+					}else {
+						this.$notify.error({
+							title: '错误',
+							message: this.rowRebackNumber+":  "+response.message,
+						});
+					}
+					this.rowRebackNumber="";
+
+				},
+				// 封装一个判断图片文件后缀名的方法
+				isImage(fileName) {
+					if (typeof fileName !== 'string') return;
+					let name = fileName.toLowerCase();
+					return name.endsWith('.png') || name.endsWith('.pdf') || name.endsWith('.jpg')  || name.endsWith('.7z')|| name.endsWith('.zip')|| name.endsWith('.rar');
 				}
 
 			}

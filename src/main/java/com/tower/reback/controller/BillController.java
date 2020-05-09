@@ -2,6 +2,7 @@ package com.tower.reback.controller;
 
 
 import com.tower.reback.entity.BillQueryBean;
+import com.tower.reback.entity.FilePath;
 import com.tower.reback.entity.Result;
 import com.tower.reback.poi.ExcelWrite;
 import com.tower.reback.pojo.Bill;
@@ -22,24 +23,24 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/bill")
 public class BillController {
 
-    public static final String SCANPATH = "D:\\SystemInfo\\logs\\ScanFile_Upload";
-    public static final String UPLOAD_TEMP="D:\\SystemInfo\\Cache\\TEMP";
+
 
     @Autowired
     private BillService billService;
 
     @RequestMapping("/upload")
     public Result upload(@RequestParam("excelFile") MultipartFile multipartFile, HttpSession httpSession){
-        /*try {
+        try {
             User user = (User)httpSession.getAttribute("user");
-            String path =UPLOAD_TEMP;
+            String path = FilePath.UPLOAD_TEMP;
             String uuid = UUID.randomUUID().toString().replace("-","");
-            String filename = FileUtils.getRealName(multipartFile.getOriginalFilename())+uuid;
+            String filename = MyUtils.getRealName(multipartFile.getOriginalFilename())+uuid;
             File file = new File(path,filename);
             if(!file.exists()){
                 file.mkdir();
@@ -49,8 +50,8 @@ public class BillController {
         }catch (Exception e){
             e.printStackTrace();
             return new Result(false,"读取表格失败,请检查导入表模板后重试");
-        }*/
-        return new Result(false,"读取表格失败,请检查导入表模板后重试");
+        }
+
     }
 
     @RequestMapping("/query")

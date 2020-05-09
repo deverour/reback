@@ -3,15 +3,14 @@ package com.tower.reback.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.tower.reback.dao.RebackDao;
-import com.tower.reback.entity.Group;
-import com.tower.reback.entity.PageResult;
-import com.tower.reback.entity.RebackQueryBean;
-import com.tower.reback.entity.RebackQueryPageBean;
+import com.tower.reback.entity.*;
 import com.tower.reback.pojo.Reback;
 import com.tower.reback.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,6 +56,31 @@ public class RebackService {
         rebackQueryBean.setRebackArea(areaList);
 
         return rebackDao.findByCondition(rebackQueryBean);
+    }
+
+
+    public Reback findbById(Integer id){
+
+        return rebackDao.findbById(id);
+    }
+
+    public int update(Reback reback) {
+
+        return rebackDao.update(reback);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
+    public void deleteScanned(Integer id){
+        Reback reback = rebackDao.findbById(id);
+        String fileName= reback.getSaomiaoname();
+        reback.setSaomiaoname("");
+        reback.setIssaomiao("否");
+        rebackDao.update(reback);
+        File filepath = new File(FilePath.SCANPATH+"\\"+fileName);
+        if (filepath.isFile() && filepath.exists()) {
+            filepath.delete();
+        }
+
     }
 
 }
