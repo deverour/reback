@@ -11,7 +11,7 @@ $.ajaxSetup({
 
 var HM=
 	{
-		CTX:"http://localhost:9002",
+		CTX:"/",
 		getParameter:function(name){
 			var pvalues=this.getParameterValues(name);
 	    	return pvalues==null?null:pvalues[0];

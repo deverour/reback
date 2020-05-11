@@ -90,17 +90,20 @@ public class BillService implements InitializingBean {
     }
 
     public List<Bill> findByCondition(BillQueryBean billQueryBean,User user){
+        System.out.println("billQueryBean.getBillBranch()"+billQueryBean.getBillBranch());
         List<String> areaList = new ArrayList<>();
-        if (billQueryBean.getBillBranch()==null){
+        if (billQueryBean.getBillBranch()==null || billQueryBean.getBillBranch().isEmpty()){
+
             HashMap<String, HashSet<String>>  m= new HashMap<>();
             m=Group.getBranchmap();
 
             //for (String str : m.get(user.getGroup())){
-            for (String str : m.get("重庆")){
+            for (String str : m.get(user.getGroup())){
+                System.out.println("group:"+str);
                 areaList.add(str);
             }
 
-        }else if(billQueryBean.getBillArea()==null){
+        }else if(billQueryBean.getBillArea()==null || billQueryBean.getBillArea().isEmpty()){
             for (String strBranch : billQueryBean.getBillBranch()){
                 for (String strArea : Group.getBranchmap().get(strBranch)){
                     areaList.add(strArea);

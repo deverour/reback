@@ -82,16 +82,16 @@ public class CpyService {
 
     public List<Cpy> findByCondition(CpyQueryBean cpyQueryBean,User user){
         List<String> areaList = new ArrayList<>();
-        if (cpyQueryBean.getCpyBranch()==null){
+        if (cpyQueryBean.getCpyBranch()==null || cpyQueryBean.getCpyBranch().isEmpty()){
             HashMap<String, HashSet<String>>  m= new HashMap<>();
             m=Group.getBranchmap();
 
-            //for (String str : m.get(user.getGroup())){
-            for (String str : m.get("重庆")){
+
+            for (String str : m.get(user.getGroup())){
                 areaList.add(str);
             }
 
-        }else if(cpyQueryBean.getCpyArea()==null){
+        }else if(cpyQueryBean.getCpyArea()==null || cpyQueryBean.getCpyArea().isEmpty()){
             for (String strBranch : cpyQueryBean.getCpyBranch()){
                 for (String strArea : Group.getBranchmap().get(strBranch)){
                     areaList.add(strArea);
