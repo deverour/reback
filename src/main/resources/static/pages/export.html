@@ -317,6 +317,11 @@
 						this.billQueryMessage=response.data.message;
 						this.billVisibility = "visibility:visible";
 						loading.close();
+						this.$notify({
+							title: '成功',
+							message: '代垫明细查询成功',
+							type: 'success'
+						});
 					});
 
 				},
@@ -341,6 +346,11 @@
 						this.cpyQueryMessage=response.data.message;
 						this.cpyVisibility = "visibility:visible";
 						loading.close();
+						this.$notify({
+							title: '成功',
+							message: '包干明细查询成功',
+							type: 'success'
+						});
 					});
 
 				},

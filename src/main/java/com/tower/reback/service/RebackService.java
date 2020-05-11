@@ -2,31 +2,56 @@ package com.tower.reback.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.tower.reback.dao.BillDao;
 import com.tower.reback.dao.RebackDao;
 import com.tower.reback.entity.*;
 import com.tower.reback.pojo.Reback;
 import com.tower.reback.pojo.User;
+import com.tower.reback.utils.MyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class RebackService {
     @Autowired
     private RebackDao rebackDao;
-    public PageResult pageQuery(RebackQueryPageBean rebackQueryPageBean) {
-        System.out.println("rebackQueryPageBean>>>>"+rebackQueryPageBean);
+
+    @Autowired
+    private BillDao billDao;
+
+    public PageResult pageQuery(RebackQueryPageBean rebackQueryPageBean,User user) {
+        System.out.println("user>>>>>:"+user.getUsername());
+        List<String> areaList = new ArrayList<>();
+        if (rebackQueryPageBean.getRebackBranch()==null || rebackQueryPageBean.getRebackBranch().isEmpty()){
+            HashMap<String, HashSet<String>> m= new HashMap<>();
+            m= Group.getBranchmap();
+
+            //for (String str : m.get(user.getGroup())){
+            for (String str : m.get(user.getGroup())){
+                System.out.println(">>>>>:"+str);
+                areaList.add(str);
+            }
+        }else if(rebackQueryPageBean.getRebackArea()==null || rebackQueryPageBean.getRebackArea().isEmpty()){
+            for (String strBranch : rebackQueryPageBean.getRebackBranch()){
+                for (String strArea : Group.getBranchmap().get(strBranch)){
+                    areaList.add(strArea);
+                }
+            }
+        }else {
+            areaList = rebackQueryPageBean.getRebackArea();
+        }
+        rebackQueryPageBean.setRebackArea(areaList);
+
+
 
         PageHelper.startPage(rebackQueryPageBean.getCurrentPage(),rebackQueryPageBean.getPageSize());
 
-       /* List<Reback> list = rebackDao.findByConditionlist(rebackQueryPageBean);
-        System.out.println("list:"+list);*/
+           /* List<Reback> list = rebackDao.findByConditionlist(rebackQueryPageBean);
+            System.out.println("list:"+list);*/
 
         Page<Reback> pageData = rebackDao.findByPage(rebackQueryPageBean);
         System.out.println("Result>>>>>>"+pageData.getResult());
@@ -35,16 +60,18 @@ public class RebackService {
     }
 
     public List<Reback> findByCondition(RebackQueryBean rebackQueryBean, User user) {
+        System.out.println("rebackQueryBean.getRebackBranch()>>>>>:"+rebackQueryBean.getRebackBranch());
         List<String> areaList = new ArrayList<>();
-        if (rebackQueryBean.getRebackBranch()==null){
+        if (rebackQueryBean.getRebackBranch()==null || rebackQueryBean.getRebackBranch().isEmpty()){
             HashMap<String, HashSet<String>> m= new HashMap<>();
             m= Group.getBranchmap();
 
             //for (String str : m.get(user.getGroup())){
-            for (String str : m.get("重庆")){
+            for (String str : m.get(user.getGroup())){
+                System.out.println(">>>>>:"+str);
                 areaList.add(str);
             }
-        }else if(rebackQueryBean.getRebackArea()==null){
+        }else if(rebackQueryBean.getRebackArea()==null || rebackQueryBean.getRebackArea().isEmpty()){
             for (String strBranch : rebackQueryBean.getRebackBranch()){
                 for (String strArea : Group.getBranchmap().get(strBranch)){
                     areaList.add(strArea);
@@ -83,4 +110,29 @@ public class RebackService {
 
     }
 
+    @Transactional(rollbackFor = {RuntimeException.class, Error.class})
+    public void deleteById(Integer id){
+        Reback reback = rebackDao.findbById(id);
+
+        billDao.deleteByHuikuanbianhao(reback.getHuikuanbianhao());
+        rebackDao.deleteById(id);
+    }
+
+    public Result remack(Integer id){
+        Reback reback = rebackDao.findbById(id);
+        if (reback.getIshuikuan().equals("是")){
+            reback.setIshuikuan("否");
+            reback.setHuikuanriqi("");
+            rebackDao.update(reback);
+            return new Result(true,"回款明细打标撤销");
+        }else {
+            String huikuanriqi = MyUtils.getExcelDate(new Date());
+            reback.setHuikuanriqi(huikuanriqi);
+            reback.setIshuikuan("是");
+            rebackDao.update(reback);
+            return new Result(true,"回款明细打标成功");
+        }
+
+
+    }
 }

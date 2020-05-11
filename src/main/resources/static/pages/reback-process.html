@@ -11,8 +11,7 @@
 		<!-- 引入样式 -->
 		<link rel="stylesheet" href="../plugins/elementui/index.css">
 		<link rel="stylesheet" href="../css/style.css">
-		<!-- <link rel="stylesheet" href="../css/orderset.css">
-		<link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css"> -->
+		<link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
 		<!-- 引入组件库 -->
 		<script src="../js/vue.js"></script>
 		<script src="../plugins/elementui/index.js"></script>
@@ -265,7 +264,7 @@
 				fullscreenLoading: false,
 
 				dataList: [],
-				rowRebackNumber : "江津-电信-20190116-001",
+				rowRebackNumber : "",
 				rowId:"",
 				myloading:'',
 
@@ -274,19 +273,24 @@
 				dialogVisible:false
 			},
 			created: function() { //在vue初始化时调用
-				/*axios.get("/user/getGroup").then((response) => {
-					this.group = response.data.data;
-				})*/
-				this.group = "重庆";
-				if (this.group == "重庆") {
-					this.rebackBranchlist = ["奉节", "涪陵", "合川", "两江", "南岸", "黔江", "万州", "永川", "渝中"];
-				} else {
-					this.rebackBranchlist = [this.group];
-				}
+				axios.get("/user/group").then((response) => {
+
+					if (response.data.flag){
+						this.group = response.data.data.group;
+
+						if (this.group == "重庆") {
+							this.rebackBranchlist = ["奉节", "涪陵", "合川", "两江", "南岸", "黔江", "万州", "永川", "渝中"];
+						} else {
+							this.rebackBranchlist = [this.group];
+						}
+					}
+
+				})
 			},
 
 			methods: {
 				findPage() {
+
 					var params={
 						"currentPage":this.currentPage,
 						"pageSize":this.pageSize,
@@ -307,6 +311,7 @@
 						this.dataList = response.data.rows;
 						this.total = response.data.total;
 					});
+
 				},
 				//切换页码
 				handleCurrentChange(currentPage) {
@@ -327,14 +332,25 @@
 				},
 				//查询
 				rebackquery() {
-					console.log("rebackquery");
+					const loading = this.$loading({
+						lock: true,
+						text: 'Loading...',
+						spinner: 'el-icon-loading',
+						background: 'rgba(0, 0, 0, 0.7)'
+					});
 					this.currentPage=1;
 					this.findPage();
+					loading.close();
+					this.$notify({
+						title: '成功',
+						message: '回款明细查询成功',
+						type: 'success'
+					});
 
 				},
 				//导出
 				rebackexport(){
-					alert("rebackexport");
+
 					var querydata = {
 						"rebackBranch":this.rebackBranch,
 						"rebackArea":this.rebackArea,
@@ -374,6 +390,7 @@
 					this.rowRebackNumber=row.huikuanbianhao;
 					this.dialogVisible=true;
 
+
 				},
 				//扫描件下载
 				rebackScannedDownload(row){
@@ -394,17 +411,24 @@
 					}).catch(function(error) {
 						console.log(error);
 					});*/
-					window.location.href="/scanned/download?id=111248";
+					window.location.href="/scanned/download?id="+row.id;
 				},
 
 				//扫描件删除
 				rebackScannedDelete(row){
+					console.log("row.huikuanbianhao"+row.huikuanbianhao);
 					this.rowRebackNumber=row.huikuanbianhao;
-					axios.post("scanned/delete?id="+row.id).then((response)=>{
+					console.log("this.rowRebackNumber1:"+this.rowRebackNumber);
+					var self=this;
+					console.log("self.rowRebackNumber1:"+self.rowRebackNumber);
+					axios.post("/scanned/delete?id="+row.id).then((response)=>{
+
 						if (response.data.flag){
+							console.log("self.rowRebackNumber2:"+self.rowRebackNumber);
+							console.log("this.rowRebackNumber2:"+this.rowRebackNumber);
 							this.$notify({
 								title: '成功',
-								message: this.rowRebackNumber+":  "+response.message,
+								message: row.huikuanbianhao+":  "+response.data.message,
 								type: 'success'
 							});
 							this.findPage();
@@ -412,7 +436,7 @@
 						}else {
 							this.$notify.error({
 								title: '错误',
-								message: this.rowRebackNumber+":  "+response.message,
+								message: row.huikuanbianhao+":  "+response.data.message,
 							});
 						}
 					});
@@ -448,7 +472,7 @@
 				},
 				//接受服务器响应
 				handleSuccess(response) {
-					if (response.data.flag){
+					if (response.flag){
 						this.$notify({
 							title: '成功',
 							message: this.rowRebackNumber+":  "+response.message,

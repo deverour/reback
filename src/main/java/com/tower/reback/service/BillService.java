@@ -39,15 +39,15 @@ public class BillService implements InitializingBean {
 
     @Transactional(rollbackFor = {RuntimeException.class, Error.class})//开启事务
     public Result saveBill(File file, User user){
-        Set<String> huikuanbianhaoSet = new HashSet<>();
-        Set<String> paynumberSet = new HashSet<>();
+        Set<String> huikuanbianhaoSet = new HashSet();
+
         huikuanbianhaoSet = rebackDao.getHuikuanbianhaoSet();
 
         try {
             ExcelRead excelRead = new ExcelRead(file.getPath(),2);
             Result result = LogicCheck.billCheck(excelRead.getMyDataList(),user,paynumberSet,huikuanbianhaoSet);
             if (result.isFlag()){
-                int index=1;
+
                 double total=0.0;
                 int counts=0;
                 Bill bill ;
@@ -61,13 +61,13 @@ public class BillService implements InitializingBean {
                 reback.setZhangqi(bill.getZhangqi());
                 reback.setYunyingshang(bill.getJiesuanyunyingshang());
                 reback.setHuikuanbianhao(bill.getHuikuanbianhao());
-                reback.setIscpy("否");
+                reback.setIscpy("代垫");
                 for (List<String> billList:lists){
                     bill= ExcelColumns.getBill(billList);
                     bill.setShangchuanriqi(shangchuanriqi);
                     total=total+ NumberUtils.toDouble(MyUtils.to2Round(bill.getJiesuanjine()));
                     counts =billDao.saveBill(bill)+counts;
-                    index++;
+
                 }
                 reback.setJiesuanjine(MyUtils.to2Round(String.valueOf(total)));
                 reback.setIssaomiao("否");
@@ -80,7 +80,7 @@ public class BillService implements InitializingBean {
                 return new Result(true,"签认明细导入成功,本次导入金额为"+total);
             }
 
-            return LogicCheck.billCheck(excelRead.getMyDataList(),user,paynumberSet,huikuanbianhaoSet);
+            return result;
         }catch (Exception e){
             e.printStackTrace();
             return new Result(false,"读取表格失败,请检查导入表模板后重试");
@@ -90,7 +90,7 @@ public class BillService implements InitializingBean {
     }
 
     public List<Bill> findByCondition(BillQueryBean billQueryBean,User user){
-        System.out.println("billQueryBean.getBillBranch()"+billQueryBean.getBillBranch());
+
         List<String> areaList = new ArrayList<>();
         if (billQueryBean.getBillBranch()==null || billQueryBean.getBillBranch().isEmpty()){
 
@@ -120,7 +120,6 @@ public class BillService implements InitializingBean {
 
 
     }
-
 
     public PageResult findPage(RebackQueryPageBean rebackQueryPageBean){
             return null;

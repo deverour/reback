@@ -56,14 +56,18 @@ public class ScannedController {
 
     @RequestMapping("/download")
     public ResponseEntity<byte[]> download(@RequestParam("id") Integer id){
+        System.out.println(">>>>>id:"+id);
         try {
             Reback reback = rebackService.findbById(id);
+            System.out.println("reback::::"+reback);
             String fileName = reback.getSaomiaoname();
-            if (fileName.equals("")){
+            if (fileName == null || fileName.equals("")){
                 fileName=FilePath.DEFAULT_SCANNED;
             }
-            String finalFileName = MyUtils.getFinalFileName(reback.getHuikuanbianhao(),reback.getSaomiaoname());
-            InputStream is= new FileInputStream(FilePath.SCANPATH+"\\"+reback.getSaomiaoname());
+            System.out.println(">>>>>>>1:"+reback.getHuikuanbianhao());
+            System.out.println(">>>>>>>2:"+fileName);
+            String finalFileName = MyUtils.getFinalFileName(reback.getHuikuanbianhao(),fileName);
+            InputStream is= new FileInputStream(FilePath.SCANPATH+"\\"+fileName);
             byte[] body = new byte[is.available()];
             is.read(body);
             HttpHeaders headers = new HttpHeaders();
@@ -80,6 +84,7 @@ public class ScannedController {
 
     @RequestMapping("/delete")
     public Result delete(@RequestParam("id") Integer id){
+        System.out.println(">>>>>id:"+id);
         try {
             rebackService.deleteScanned(id);
             return new Result(true,"删除扫描件成功");

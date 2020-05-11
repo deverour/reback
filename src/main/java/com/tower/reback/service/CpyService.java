@@ -52,7 +52,7 @@ public class CpyService {
                 reback.setZhangqi(cpy.getZhangqi());
                 reback.setYunyingshang(cpy.getJiesuanyunyingshang());
                 reback.setHuikuanbianhao(cpy.getHuikuanbianhao());
-                reback.setIscpy("否");
+                reback.setIscpy("包干");
                 for (List<String> cpyList:lists){
                     cpy= ExcelColumns.getCpy(cpyList);
                     cpy.setShangchuanriqi(shangchuanriqi);

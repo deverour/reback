@@ -4,11 +4,8 @@ import com.github.pagehelper.Page;
 import com.tower.reback.entity.RebackQueryBean;
 import com.tower.reback.entity.RebackQueryPageBean;
 import com.tower.reback.pojo.Reback;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
-import org.apache.ibatis.annotations.Insert;
 
 import java.util.List;
 import java.util.Set;
@@ -17,9 +14,9 @@ import java.util.Set;
 public interface RebackDao {
 
     @Select("select huikuanbianhao from rebacks")
-    public Set<String> getHuikuanbianhaoSet();
+    Set<String> getHuikuanbianhaoSet();
 
-    @Insert("insert into rebacks (fengongsi,quyu,zhangqi,yunyingshang,kaipiaobianhao,jiesuanjine,issaomiao,ishuikuan,huikuanriqi,shangchuanriqi,iscpy) values (#{fengongsi},#{quyu},#{zhangqi},#{yunyingshang},#{kaipiaobianhao},#{jiesuanjine},#{issaomiao},#{ishuikuan},#{huikuanriqi},#{shangchuanriqi},#{iscpy}) ")
+    @Insert("insert into rebacks (fengongsi,quyu,zhangqi,yunyingshang,huikuanbianhao,jiesuanjine,issaomiao,ishuikuan,huikuanriqi,shangchuanriqi,iscpy) values (#{fengongsi},#{quyu},#{zhangqi},#{yunyingshang},#{huikuanbianhao},#{jiesuanjine},#{issaomiao},#{ishuikuan},#{huikuanriqi},#{shangchuanriqi},#{iscpy}) ")
     int saveReback(Reback reback);
 
 
@@ -98,8 +95,11 @@ public interface RebackDao {
     @Select("select * from rebacks where id = #{id}")
     Reback findbById(@Param("id") Integer id);
 
-    @Update("update rebacks set saomiaoname =#{saomiaoname},issaomiao=#{issaomiao} where id = #{id}")
+    @Update("update rebacks set ishuikuan =#{ishuikuan},huikuanriqi=#{huikuanriqi},saomiaoname =#{saomiaoname},issaomiao=#{issaomiao} where id = #{id}")
     int update(Reback reback);
+
+    @Delete("delete from rebacks where id = #{id} ")
+    void deleteById(@Param("id") Integer id);
 
 
 }

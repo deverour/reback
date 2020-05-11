@@ -2,7 +2,9 @@ package com.tower.reback.dao;
 
 import com.tower.reback.entity.BillQueryBean;
 import com.tower.reback.pojo.Bill;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Repository;
@@ -19,7 +21,7 @@ public interface BillDao {
     @Select("select zhifudanhao from payment")
     public Set<String> getPaynumberSet();
 
-    @Insert("insert into bills (quyu,zhifudanhao,zhanzhibianma,dianbiaobianma,dianbiaobeilv,shifouzhigongdian,huhao,shiqi,zhongqi,qidu,zhidu,diansun,dianliang,dianzizonge,gongxiangyunyingshang,fentanbili,jiesuanjine,zhangqi,jiesuanyunyingshang,kaipiaoshijian,kaipiaobianhao,shangchuanriqi) values (#{quyu},#{zhifudanhao},#{zhanzhibianma},#{dianbiaobianma},#{dianbiaobeilv},#{shifouzhigongdian},#{huhao},#{shiqi},#{zhongqi},#{qidu},#{zhidu},#{diansun},#{dianliang},#{dianzizonge},#{gongxiangyunyingshang},#{fentanbili},#{jiesuanjine},#{zhangqi},#{jiesuanyunyingshang},#{kaipiaoshijian},#{kaipiaobianhao},#{shangchuanriqi}) ")
+    @Insert("insert into bills (quyu,zhifudanhao,zhanzhibianma,dianbiaobianma,dianbiaobeilv,shifouzhigongdian,huhao,shiqi,zhongqi,qidu,zhidu,diansun,dianliang,dianzizonge,gongxiangyunyingshang,fentanbili,jiesuanjine,zhangqi,jiesuanyunyingshang,kaipiaoshijian,huikuanbianhao,shangchuanriqi) values (#{quyu},#{zhifudanhao},#{zhanzhibianma},#{dianbiaobianma},#{dianbiaobeilv},#{shifouzhigongdian},#{huhao},#{shiqi},#{zhongqi},#{qidu},#{zhidu},#{diansun},#{dianliang},#{dianzizonge},#{gongxiangyunyingshang},#{fentanbili},#{jiesuanjine},#{zhangqi},#{jiesuanyunyingshang},#{kaipiaoshijian},#{huikuanbianhao},#{shangchuanriqi}) ")
     public int saveBill(Bill bill);
 
 
@@ -45,6 +47,10 @@ public interface BillDao {
                 "and zhangqi between #{billStartPaymentDate} and #{billEndPaymentDate}   " +
             "</if>" +
             "</script>")
-    public List<Bill> findByCondition(BillQueryBean billQueryBean);
+    List<Bill> findByCondition(BillQueryBean billQueryBean);
+
+
+    @Delete("delete from bills where huikuanbianhao = #{huikuanbianhao} ")
+    void deleteByHuikuanbianhao(@Param("huikuanbianhao") String huikuanbianhao);
 
 }

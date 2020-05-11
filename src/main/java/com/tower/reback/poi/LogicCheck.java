@@ -17,7 +17,8 @@ public class LogicCheck {
 
 
     public static Result billCheck(List<List<String>> bills, User user, Set<String> paynumberSet, Set<String> huikuanbianhaoSet){
-
+        System.out.println("paynumberSet.size()>>>>:"+paynumberSet.size());
+        System.out.println("huikuanbianhaoSet.size()>>>>:"+huikuanbianhaoSet.size());
         HashMap<String,String> map = new HashMap<String,String>();
         HashSet<String> quyuSet = Group.getBranchmap().get(user.getGroup());
         String message="";
@@ -61,7 +62,9 @@ public class LogicCheck {
                 }
 
                 //支付单号
+
                 String zhifudanhao=bill.get(ExcelColumns.INDEX_BILL_ZHIFUDANHAO);
+
                 if (!paynumberSet.contains(zhifudanhao)){
 
                     message=message+ "【支付单号】不存在\n";
@@ -103,12 +106,10 @@ public class LogicCheck {
                 //户号
                 String huhao = bill.get(ExcelColumns.INDEX_BILL_HUHAO);
                 if (iszhigong ){
-                    //System.out.println(x);
-                    //System.out.println("直供电");
-                    //System.out.println(bill.get(BillExcelInfo.INDEX_HUHAO));
+
                     if (huhao==null){
                         message=message+"【户号错误】,直供电户号不能为空\n";
-                        //System.out.println("户号错误,直供电户号不能为空  ");
+
                     }else if (!NumberUtils.isNumber(huhao)){
                         message=message+"【户号错误】,请检查是否有空格或非数字\n";
                     }
@@ -153,7 +154,7 @@ public class LogicCheck {
                     message=message+"【垫资总额】错误,请检查是否有空格或非数字\n";
                 }
                 //共享运营商
-                //System.out.println("共享运营商:"+bill.get(BillExcelInfo.INDEX_GONGXIANGYUNYINGSHANG));
+
                 if (!Group.ShareCustomerSet.contains(bill.get(ExcelColumns.INDEX_BILL_GONGXIANGYUNYINGSHANG))){
                     message=message+"【共享运营商】错误,请参导入模板表二限定字段\n";
                 }
@@ -183,7 +184,7 @@ public class LogicCheck {
                     message=message+"【账期】错误,请检查是否有空格或非数字\n";
                 }else if(zhangqi.length()!=6){
                     message=message+"【账期】错误,请检查长度是否为6位\n";
-                    //System.out.println(zhangqi.length());
+
                 }else if(Integer.parseInt(zhangqi)>202212 || Integer.parseInt(zhangqi)<201401){
                     message=message+"【账期】错误,请检查是否过大或者过小\n";
 
@@ -207,7 +208,7 @@ public class LogicCheck {
                     message=message+"【制表时间】错误,请检查是否有空格或非数字\n";
                 }else if(kaipiaoshijian.length()!=8){
                     message=message+"【制表时间】错误,请检查长度是否为8位\n";
-                    //System.out.println(kaipiaoshijian.length());
+
                 }else if(Integer.parseInt(kaipiaoshijian)>20221231 || Integer.parseInt(kaipiaoshijian)<20140101){
                     message=message+"【制表时间】错误,请检查是否过大或者过小\n";
 
@@ -233,10 +234,10 @@ public class LogicCheck {
                     message=message+"【回款编号】错误,同一导入表回款编号应当一致\n";
                 }else{
                     String[] kaipiaobianhaoStr=kaipiaobianhao.split("-");
-    //                for (String s:kaipiaobianhaoStr){
-    //                    System.out.println(s);
     //
-    //                }
+
+                    System.out.println("jiesuanyunyingshang"+jiesuanyunyingshang);
+                    System.out.println("kaipiaobianhaoStr[1]"+kaipiaobianhaoStr[1]);
                     if(kaipiaobianhaoStr.length!=4){
                         message=message+"【回款编号】格式错误\n";
                     }else if (!kaipiaobianhaoStr[0].equals(quyu)){

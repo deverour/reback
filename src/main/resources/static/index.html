@@ -67,6 +67,15 @@
 </div>
 </body>
 
+<script type="text/javascript">
+    var _topWin = window;
+    while (_topWin != _topWin.parent.window) {
+        _topWin = _topWin.parent.window;
+    }
+    if (window != _topWin)_topWin.document.location.href = '${pageContext.request.contextPath}/index.html';
+</script>
+
+
 <script>
     var vueObj = new Vue({
         el: '#app',
