@@ -97,7 +97,7 @@ public class RebackService {
     }
 
     @Transactional(rollbackFor = {RuntimeException.class, Error.class})
-    public void deleteScanned(Integer id){
+    public Reback deleteScanned(Integer id){
         Reback reback = rebackDao.findbById(id);
         String fileName= reback.getSaomiaoname();
         reback.setSaomiaoname("");
@@ -107,15 +107,17 @@ public class RebackService {
         if (filepath.isFile() && filepath.exists()) {
             filepath.delete();
         }
+        return reback;
 
     }
 
     @Transactional(rollbackFor = {RuntimeException.class, Error.class})
-    public void deleteById(Integer id){
+    public Reback deleteById(Integer id){
         Reback reback = rebackDao.findbById(id);
 
         billDao.deleteByHuikuanbianhao(reback.getHuikuanbianhao());
         rebackDao.deleteById(id);
+        return reback;
     }
 
     public Result remack(Integer id){

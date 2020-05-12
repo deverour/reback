@@ -66,13 +66,13 @@
 		</div>
         <el-dialog
                 title="提示"
-                :visible.sync="centerDialogVisible"
+                :visible.sync="updataMessageDialogVisible"
                 width="30%"
                 center>
             <span>{{updatamessage}}</span>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="centerDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
+                <el-button @click="updataMessageDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="updataMessageDialogVisible = false">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -88,7 +88,7 @@
         data:{
             myloading:'',
             updatamessage:"",
-            centerDialogVisible: false,
+            updataMessageDialogVisible: false,
 
         },
         created: function () {//在vue初始化时调用
@@ -107,10 +107,7 @@
                 if (isXLSX) {
                     return true;
                 }
-                this.$notify.error({
-                    title: '错误',
-                    message: '上传文件只能是xlsx格式!'
-                });
+                this.$message.error('上传文件只能是xlsx格式!');
 
                 return false;
             },
@@ -128,7 +125,7 @@
                 this.updatamessage="";
 
                 this.myloading.close();
-                this.centerDialogVisible = true;
+                this.updataMessageDialogVisible = true;
 
                 this.updatamessage=response.message;
 

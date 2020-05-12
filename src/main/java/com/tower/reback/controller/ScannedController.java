@@ -86,8 +86,8 @@ public class ScannedController {
     public Result delete(@RequestParam("id") Integer id){
         System.out.println(">>>>>id:"+id);
         try {
-            rebackService.deleteScanned(id);
-            return new Result(true,"删除扫描件成功");
+            Reback reback = rebackService.deleteScanned(id);
+            return new Result(true,"删除扫描件成功",reback);
         }catch (Exception e){
             e.printStackTrace();
             return new Result(false,"删除扫描件失败,请刷新网页后重试");

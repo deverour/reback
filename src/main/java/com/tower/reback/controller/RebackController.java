@@ -68,8 +68,8 @@ public class RebackController {
     @RequestMapping("/delete")
     public Result delete(@RequestParam("id") Integer id){
         try {
-            rebackService.deleteById(id);
-            return new Result(true,"删除回款明细成功");
+            Reback reback = rebackService.deleteById(id);
+            return new Result(true,"删除回款明细成功",reback);
 
         }catch (Exception e){
             e.printStackTrace();
