@@ -173,7 +173,11 @@
 								<template slot-scope="scope" >
 									<el-button type="primary" size="mini" @click="rebackScannedUpdate(scope.row)">上传</el-button>
 									<el-button type="success" size="mini" @click="rebackScannedDownload(scope.row)">下载</el-button>
-									<el-button type="danger" size="mini" @click="rebackScannedDelete(scope.row)">删除</el-button>
+									<template>
+										<el-popconfirm title="这是一段内容确定删除吗？" >
+											<el-button type="danger" size="mini" @click="rebackScannedDelete(scope.row)" slot="reference">删除</el-button>
+										</el-popconfirm>
+									</template>
 
 
 								</template>
@@ -181,8 +185,8 @@
 							<el-table-column prop="scanoperation" label="回款明细操作"   min-width="91">
 								<template slot-scope="scope" >
 
-									<el-button type="warning" size="mini" icon="el-icon-star-off" circle @click="handleDownload(scope.row)"></el-button>
-									<el-button type="danger" size="mini" icon="el-icon-delete" circle @click="handleDelete(scope.row)"></el-button>
+									<el-button type="warning" size="mini" icon="el-icon-star-off" circle @click="rebackMark(scope.row)"></el-button>
+									<el-button type="danger" size="mini" icon="el-icon-delete" circle @click="rebackDelete(scope.row)"></el-button>
 								</template>
 							</el-table-column>
 						</el-table>
@@ -350,6 +354,12 @@
 				},
 				//导出
 				rebackexport(){
+					const loading = this.$loading({
+						lock: true,
+						text: 'Loading...',
+						spinner: 'el-icon-loading',
+						background: 'rgba(0, 0, 0, 0.7)'
+					});
 
 					var querydata = {
 						"rebackBranch":this.rebackBranch,
@@ -365,6 +375,7 @@
 						"rebackEndReceivableDate": this.rebackReceivableDate[1],
 					};
 					axios.post("/reback/export", querydata,{responseType: 'blob'}).then(function(response) {
+						loading.close();
 						var blob = new Blob([response.data])
 						var downloadElement = document.createElement('a');
 						var href = window.URL.createObjectURL(blob); //创建下载的链接
@@ -416,12 +427,20 @@
 
 				//扫描件删除
 				rebackScannedDelete(row){
+					const loading = this.$loading({
+						lock: true,
+						text: 'Loading...',
+						spinner: 'el-icon-loading',
+						background: 'rgba(0, 0, 0, 0.7)'
+					});
 					console.log("row.huikuanbianhao"+row.huikuanbianhao);
 					this.rowRebackNumber=row.huikuanbianhao;
 					console.log("this.rowRebackNumber1:"+this.rowRebackNumber);
 					var self=this;
 					console.log("self.rowRebackNumber1:"+self.rowRebackNumber);
 					axios.post("/scanned/delete?id="+row.id).then((response)=>{
+
+						loading.close();
 
 						if (response.data.flag){
 							console.log("self.rowRebackNumber2:"+self.rowRebackNumber);
@@ -443,9 +462,57 @@
 					this.rowRebackNumber="";
 				},
 
+				//打标
+				rebackMark(row){
+					const loading = this.$loading({
+						lock: true,
+						text: 'Loading...',
+						spinner: 'el-icon-loading',
+						background: 'rgba(0, 0, 0, 0.7)'
+					});
+					var self=this;
+					axios.post("/reback/remark?id="+row.id).then((response)=>{
+						loading.close();
+						if (response.data.flag){
+							this.$notify({
+								title: '成功',
+								message: row.huikuanbianhao+":  "+response.data.message,
+								type: 'success'
+							});
+							self.findPage();
+						};
+
+					})
+				},
+
+				//回款明细删除
+				rebackDelete(row){
+					const loading = this.$loading({
+						lock: true,
+						text: 'Loading...',
+						spinner: 'el-icon-loading',
+						background: 'rgba(0, 0, 0, 0.7)'
+					});
+					var self=this;
+					axios.post("/reback/delete?id="+row.id).then((response)=>{
+						loading.close();
+						if (response.data.flag){
+							this.$notify({
+								title: '成功',
+								message: row.huikuanbianhao+":  "+response.data.message,
+								type: 'success'
+							});
+							self.findPage();
+						};
+					})
+				},
+
+
+
+
+
 				// 使用后缀名，判断文件类型
 				beforeUpload(file){
-					console.log("filename:"+file.name)
 
 					if (this.isImage(file.name)){
 						return true;
@@ -455,9 +522,6 @@
 						message: '请选择正确的文件类型(例如 *.png、 *.pdf、 *.jpg、 *.rar、 *.zip、 *.7z)'
 					});
 					return false;
-
-
-
 
 				},
 				//loading
@@ -472,15 +536,18 @@
 				},
 				//接受服务器响应
 				handleSuccess(response) {
+					this.myloading.close();
 					if (response.flag){
+
 						this.$notify({
 							title: '成功',
 							message: this.rowRebackNumber+":  "+response.message,
 							type: 'success'
 						});
 						this.findPage();
-						this.myloading.close();
+
 					}else {
+
 						this.$notify.error({
 							title: '错误',
 							message: this.rowRebackNumber+":  "+response.message,
