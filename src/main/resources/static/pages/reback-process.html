@@ -151,7 +151,7 @@
                     <el-col :span="6" :offset="8">
                         <div class="grid-content bg-purple">
                             <el-button @click="rebackquery()">查询</el-button>
-                            <el-button @click="rebackexport()">导出</el-button>
+                            <el-button @click="rebackexport()"  type="primary">导出</el-button>
 
                         </div>
                     </el-col>
@@ -226,7 +226,7 @@
             <span>确定要删除回款编号为:【{{deleteRebackNumber}}】 的回款明细?</span>
             <span>删除回款明细后,回款编号对应的签认明细将一起被删除!</span>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="deleteRebackDialogVisible = false">取 消</el-button>
+                <el-button type="info" @click="deleteRebackDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="deleteRebackConfirm">确 定</el-button>
             </span>
         </el-dialog>
@@ -239,7 +239,7 @@
             <span>确定要删除回款编号为:【{{deleteScannedRebackNumber}}】 的扫描件?</span>
 
             <span slot="footer" class="dialog-footer">
-                <el-button @click="deleteScannedDialogVisible = false">取 消</el-button>
+                <el-button type="info" @click="deleteScannedDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="deleteScannedConfirm">确 定</el-button>
             </span>
         </el-dialog>
@@ -361,7 +361,7 @@
             getarea() {
                 this.rebackArea = [];
                 this.rebackArealist = [];
-                //console.log(this.rebackBranch);
+
                 rebackBranchselectlist = this.rebackBranch
                 for (var i = 0; i < rebackBranchselectlist.length; i++) {
                     var mycars = rebackBranchmap.get(rebackBranchselectlist[i]).toString().split(',');
@@ -381,7 +381,7 @@
                 this.currentPage = 1;
                 this.findPage();
                 loading.close();
-                this.$message({message: '回款明细查询成功',type: 'success'});
+              /*  this.$message({message: '回款明细查询成功',type: 'success'});*/
 
             },
             //导出
@@ -418,9 +418,9 @@
                     document.body.removeChild(downloadElement); //下载完成移除元素
                     window.URL.revokeObjectURL(href); //释放掉blob对象
 
-                    console.log(response);
+
                     loading.close();
-                    console.log("  loading.close()");
+
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -428,7 +428,7 @@
             },
             //扫描件上传
             rebackScannedUpdate(row) {
-                console.log("rebackScannedUpdate");
+
                 this.rowId = row.id;
                 this.rowRebackNumber = row.huikuanbianhao;
                 this.updateScannedDialogVisible = true;
@@ -469,13 +469,10 @@
                             type: 'success'
                         });
                         this.findPage();
-                        this.myloading.close();
+
                     } else {
-                        this.$notify.error({
-                            title: '错误',
-                            message: response.data.message,
-                        });
-                        this.$message.error('错了哦，这是一条错误消息');
+
+                        this.$message.error(response.data.message);
                     }
                 });
                 this.deleteScannedId="";
@@ -500,7 +497,9 @@
                             type: 'success'
                         });
                         self.findPage();
-                    } ;
+                    }else {
+                        this.$message.error(response.data.message);
+                    }
                 })
             },
 

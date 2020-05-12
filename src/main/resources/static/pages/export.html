@@ -275,7 +275,7 @@
 				getBillArea() {
 					this.billArea = [];
 					this.billArealist = [];
-					console.log(this.billBranch);
+
 					billBranchselectlist = this.billBranch
 					for (var i = 0; i < billBranchselectlist.length; i++) {
 						var mycars =  branchmap.get(billBranchselectlist[i]).toString().split(',');
@@ -287,7 +287,7 @@
 				getCpyArea() {
 					this.cpyArea = [];
 					this.cpyArealist = [];
-					console.log(this.cpyBranch);
+
 					cpyBranchselectlist = this.cpyBranch
 					for (var i = 0; i < cpyBranchselectlist.length; i++) {
 						var mycars = branchmap.get(cpyBranchselectlist[i]).toString().split(',');
@@ -380,7 +380,7 @@
 						document.body.removeChild(downloadElement); //下载完成移除元素
 						window.URL.revokeObjectURL(href); //释放掉blob对象
 
-						console.log(response);
+
 						loading.close();
 
 					}).catch(function(error) {
@@ -414,7 +414,7 @@
 						document.body.removeChild(downloadElement); //下载完成移除元素
 						window.URL.revokeObjectURL(href); //释放掉blob对象
 
-						console.log(response);
+
 						loading.close();
 
 					}).catch(function(error) {

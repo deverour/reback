@@ -56,7 +56,40 @@ public class UserController {
     @RequestMapping("/group")
     public Result group(HttpSession httpSession){
         User user = (User)httpSession.getAttribute("user");
-        System.out.println("user:"+user);
-        return new Result(true,"2222222",user);
+        return new Result(true,"",user);
+    }
+
+    @RequestMapping("/name")
+    public Result name(HttpSession httpSession){
+        User user = (User)httpSession.getAttribute("user");
+        return new Result(true,"",user);
+    }
+
+    @RequestMapping("/change")
+    public Result change(@RequestBody User user){
+        System.out.println("user:>>>>"+user);
+        try {
+            int count = userService.change(user);
+            if (count>0){
+                return new Result(true,"修改密码成功，请重新登录");
+            }else {
+                return new Result(false,"修改密码失败，账号或密码错误");
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new Result(false,"修改密码失败，请重试");
+    }
+
+    @RequestMapping("/logout")
+    public Result logout(HttpSession httpSession){
+        try {
+            httpSession.setAttribute("user",null);
+            return new Result(true,"退出登录成功");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new Result(false,"退出登录失败，请检查网络");
     }
 }

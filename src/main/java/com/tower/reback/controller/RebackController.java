@@ -78,9 +78,16 @@ public class RebackController {
     }
 
     @RequestMapping("/remark")
-    public Result remark(@RequestParam("id") Integer id){
+    public Result remark(@RequestParam("id") Integer id,HttpSession httpSession){
         try {
-            return rebackService.remack(id);
+            User user = (User) httpSession.getAttribute("user");
+            String group = user.getGroup();
+            if (group.equals("重庆")){
+                return rebackService.remack(id);
+            }else {
+                return new Result(false,"对不起，您没有执行该操作的权限");
+            }
+
         }catch (Exception e){
             e.printStackTrace();
         }

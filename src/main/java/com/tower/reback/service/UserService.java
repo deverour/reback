@@ -10,7 +10,12 @@ public class UserService {
 
     @Autowired
     private UserDao userDao;
+
     public User findByUserAndPassword(String username,String password){
         return userDao.findByUserAndPassword(username,password);
+    }
+
+    public int change(User user){
+        return userDao.change(user);
     }
 }
