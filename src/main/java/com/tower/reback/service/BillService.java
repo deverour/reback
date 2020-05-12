@@ -69,6 +69,7 @@ public class BillService implements InitializingBean {
                     counts =billDao.saveBill(bill)+counts;
 
                 }
+                total = MyUtils.to2Round(total);
                 reback.setJiesuanjine(MyUtils.to2Round(String.valueOf(total)));
                 reback.setIssaomiao("否");
                 reback.setIshuikuan("否");

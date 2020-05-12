@@ -3,6 +3,7 @@ package com.tower.reback.utils;
 import com.tower.reback.pojo.Bill;
 import com.tower.reback.pojo.Cpy;
 import com.tower.reback.pojo.Reback;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 import java.io.UnsupportedEncodingException;
@@ -68,6 +69,10 @@ public class MyUtils {
     public static String to2Round(String numStr){
         DecimalFormat format = new DecimalFormat("#0.##");
         return format.format(new BigDecimal(numStr));
+    }
+    public static Double to2Round(Double numStr){
+        DecimalFormat format = new DecimalFormat("#0.##");
+        return NumberUtils.toDouble(format.format(numStr));
     }
     public static String to6Round(String numStr){
         DecimalFormat format = new DecimalFormat("#0.######");
