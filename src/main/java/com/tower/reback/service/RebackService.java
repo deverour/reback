@@ -24,6 +24,7 @@ public class RebackService {
     private BillDao billDao;
 
     public PageResult pageQuery(RebackQueryPageBean rebackQueryPageBean,User user) {
+        System.out.println("rebackQueryPageBean>>>>>:"+rebackQueryPageBean);
         System.out.println("user>>>>>:"+user.getUsername());
         List<String> areaList = new ArrayList<>();
         if (rebackQueryPageBean.getRebackBranch()==null || rebackQueryPageBean.getRebackBranch().isEmpty()){

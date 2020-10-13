@@ -24,7 +24,4 @@ public class Reback {
     private String saomiaoname;
     private String iscpy;
 
-
-
-
 }

@@ -28,7 +28,7 @@ public class LogicCheck {
 
         String oldkaipiaobianhao;
         String oldkey="";
-
+        System.out.println("bills.get(0).size()>>>>>"+bills.get(0).size());
         if (bills.get(0).size()< ExcelColumns.INDEX_BILL_KAIPIAOBIANHAO+1){
             message=message+"第【"+(bills.get(0).size()+1)+"】列不能为空\n";
             //map.put("msg",message);
@@ -173,7 +173,6 @@ public class LogicCheck {
                 }else {
 
                     total=total+NumberUtils.toDouble(MyUtils.to2Round(jiesuanjine));
-
                 }
 
                 //账期
@@ -193,6 +192,7 @@ public class LogicCheck {
                 }else if(zhangqi.substring(4).equals("00") ){
                     message=message+"【账期月份】错误,不应等于00\n";
                 }
+
                 //结算运营商
                 String jiesuanyunyingshang=bill.get(ExcelColumns.INDEX_BILL_JIESUANYUNYINGSHANG);
                 if (!Group.CustomerSet.contains(jiesuanyunyingshang)){
@@ -200,6 +200,7 @@ public class LogicCheck {
                 }else if (!bill.get(ExcelColumns.INDEX_BILL_GONGXIANGYUNYINGSHANG).contains(jiesuanyunyingshang)){
                     message=message+"【共享运营商】应包含【结算运营商】\n";
                 }
+
                 //开票时间
                 String kaipiaoshijian=bill.get(ExcelColumns.INDEX_BILL_KAIPIAOSHIJIAN);
                 if (!NumberUtils.isNumber(kaipiaoshijian)){

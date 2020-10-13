@@ -36,6 +36,7 @@ public class BillController {
 
     @RequestMapping("/upload")
     public Result upload(@RequestParam("excelFile") MultipartFile multipartFile, HttpSession httpSession){
+        System.out.println("111111111111111111");
         try {
             User user = (User)httpSession.getAttribute("user");
             String path = FilePath.UPLOAD_TEMP;

@@ -30,87 +30,43 @@ public class ExcelWrite {
 
         SXSSFWorkbook wb=new SXSSFWorkbook();
         ArrayList<String> namelist = ExcelColumns.getBillTitle();
-        //long t0;
-        //long t6;
-        //long t6a=0;
+
         long ta =0;
         long tb =0;
         ta = System.currentTimeMillis();
         for (int page=1;page<=pages;page++){
-            // System.out.println("page<=pages"+(page<=pages));
-            //System.out.println("step1");
             wb.createSheet(sheetName.get(page-1));
-            // System.out.println("step2");
             SXSSFSheet sheet = wb.getSheetAt(page-1);
             int rowindex = 0;
-            //System.out.println("step3");
             SXSSFRow row = sheet.createRow(rowindex);
             int colindex = 0;
-            //System.out.println("step4");
             for (String str:namelist){
                 SXSSFCell cell = row.createCell(colindex);
                 cell.setCellValue(str);
                 colindex++;
             }
-
             rowindex++;
             int countanull=0;
             Cell cell;
-
-
             int start=(page-1)*(PAGE_COUNTS-1);
             int end=page*(PAGE_COUNTS-1)-1;
             if(page==pages){
                 end=list.size()-1;
             }
-            // System.out.println("page:"+page);
-            //System.out.println("start"+start);
-            //System.out.println("end"+end);
-
             for (int listindex=start;listindex<=end;listindex++){
-
-                //t0 = System.currentTimeMillis();
                 row = sheet.createRow(rowindex);
-                //t6 = System.currentTimeMillis();
-
                 List<String> billlist = MyUtils.getList(list.get(listindex));
-
-                //t6a =t6a+(t6-t0);
-
                 for (int i=0;i<billlist.size();i++){
-                    //t1 = System.currentTimeMillis();
                     String str =billlist.get(i);
-                    // = System.currentTimeMillis();
-               /* if(str==null){
-                    countanull++;
-                    continue;
-                }*/
-                    //t3 = System.currentTimeMillis();
                     cell = row.createCell(i);
-                    //t4 = System.currentTimeMillis();
-
-
                     cell.setCellValue(str);
-                    //t5 = System.currentTimeMillis();
-               /* t2a =t2a+(t2-t1);
-                t3a =t3a+(t3-t2);
-                t4a =t4a+(t4-t3);
-                t5a =t5a+(t5-t4);*/
-
                 }
-
                 rowindex++;
-
-
             }
-            //System.out.println("rowindex:"+rowindex);
         }
 
         tb = System.currentTimeMillis();
         System.out.println("总耗时："+(tb-ta));
-
-        //System.out.println("createRow耗时："+t6a);
-
         InputStream in = null;
         try{
             //临时缓冲区

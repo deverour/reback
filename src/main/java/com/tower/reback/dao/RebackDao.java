@@ -13,7 +13,7 @@ import java.util.Set;
 @Repository
 public interface RebackDao {
 
-    @Select("select huikuanbianhao from rebacks")
+    @Select("select kaipiaobianhao from rebacks")
     Set<String> getHuikuanbianhaoSet();
 
     @Insert("insert into rebacks (fengongsi,quyu,zhangqi,yunyingshang,huikuanbianhao,jiesuanjine,issaomiao,ishuikuan,huikuanriqi,shangchuanriqi,iscpy) values (#{fengongsi},#{quyu},#{zhangqi},#{yunyingshang},#{huikuanbianhao},#{jiesuanjine},#{issaomiao},#{ishuikuan},#{huikuanriqi},#{shangchuanriqi},#{iscpy}) ")
